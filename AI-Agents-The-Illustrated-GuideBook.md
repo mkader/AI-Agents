@@ -93,7 +93,8 @@
     ```
     installed the tools package ``` pip install crewai-tools ```
     get api key - https://www.exchangerate-api.com/
-    
+
+    index.py
     # 1. standard import statements:
     from dotenv import load_dotenv
     load_dotenv()
@@ -183,64 +184,200 @@
     ```
     <img width="815" height="548" alt="image" src="https://github.com/user-attachments/assets/1c684494-ce0b-4517-a44c-61065a658e00" />
 
-#3.2) Custom tools via MCP
-Now, let’s take it a step further.
-Instead of embedding the tool directly in every Crew, we’ll expose it as a reusable
-MCP tool—making it accessible across multiple agents and flows via a simple
-server.
-First, install the required packages:
+    ```mermaid
+    sequenceDiagram
+    actor User
+    participant Script as index.py
+    participant Crew
+    participant Agent as Currency Analyst
+    participant LLM
+    participant Tool as Currency Converter Tool
+    participant API as ExchangeRate API
 
-We’ll continue using ExchangeRate-API in our .env file:
+    User->>Script: Run script
+    Script->>Script: Load .env
+    Script->>Crew: kickoff(amount, from_currency, to_currency)
+    Crew->>Agent: Execute currency conversion task
+    Agent->>LLM: Request conversion and financial context
+    LLM-->>Agent: Decide to use currency converter tool
+    Agent->>Tool: _run(amount, from_currency, to_currency)
+    Tool->>API: GET /latest/{from_currency}
+    API-->>Tool: Exchange rates JSON
 
-We’ll now write a lightweight server.py script that exposes the currency converter
-tool. We start with the standard imports:
+    alt API result is success
+        Tool->>Tool: Calculate amount × conversion rate
+        Tool-->>Agent: Converted amount
+        Agent->>LLM: Prepare response with conversion result
+        LLM-->>Agent: Detailed response
+        Agent-->>Crew: Task result
+        Crew-->>Script: Final response
+        Script-->>User: Print response
+    else API request fails
+        Tool-->>Agent: Raise ValueError
+        Agent-->>Crew: Task failure
+        Crew-->>Script: Error
+        Script-->>User: Execution error
+    end
+    ```
 
-Now, we load environment variables and initialize the server:
+#### 3.2) Custom tools via MCP
+* Instead of embedding the tool directly in every Crew, we’ll expose it as a reusable MCP tool—making it accessible across multiple agents and flows via a simple server.
+1. install the required packages: ``` pip install mcp-server requests python-dotenv  mcp "crewai-tools[mcp]" ```
 
-17
+```
+# 1. server.py - lightweight script that exposes the currency converter tool
 
-DailyDoseofDS.com
+import os, requests
+import dotenv
+dotenv.load_dotenv()
+from mcp.server.fastmcp import FastMCP
 
-Next, we define the tool logic with @mcp.tool():
+mcp = FastMCP('currency_converter-server', port=8081)
+api_key = "123213" #os.getenv("EXCHANGE_RATE_API_KEY")
 
-This function takes three inputs—amount, source currency, and target
-currency—and returns the converted result using the real-time exchange rate
-API.
-To make the tool accessible, we need to run the MCP server. Add this at the end
-of your script:
+# 2. define the tool logic with @mcp.tool
 
-18
+@mcp.tool()
+def currency_converter(amount: float, from_currency: str, to_currency: str) -> str:
+    if not api_key:
+        raise ValueError("EXCHANGE_RATE_API_KEY is not set")
 
-DailyDoseofDS.com
+    url = f"https://v6.exchangerate-api.com/v6/{api_key}/pair/{from_currency}/{to_currency}/{amount}"
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+    response_data = response.json()
+    if response_data.get("result") != "success":
+        raise ValueError(f"Currency conversion failed: {response_data.get('error-type', 'unknown API error')}")
 
-This starts the server and exposes your convert_currency tool at:
-http://localhost:8081/sse.
-Now any CrewAI agent can connect to it using MCPServerAdapter. Let’s now
-consume this tool from within a CrewAI agent.
-First, we import the required CrewAI classes. We’ll use Agent, Task, and Crew
-from CrewAI, and MCPServerAdapter to connect to our tool server.
+    rate = response_data["conversion_rate"]
+    result = response_data["conversion_result"]
+    print(f"{amount} {from_currency.upper()} = {result:.2f} {to_currency.upper()} (Rate: {rate:.4f})")
+    return f"{amount} {from_currency.upper()} = {result:.2f} {to_currency.upper()} (Rate: {rate:.4f})"
 
-Next, we connect to the MCP tool server. Define the server parameters to
-connect to your running tool (from server.py).
+# 3. To make the tool accessible, run the MCP server. 
 
-Now, we use the discovered MCP tool in an agent:
-This agent is assigned the convert_currency tool from the remote server. It can
-now call the tool just like a locally defined one.
+if __name__ == "__main__":
+    mcp.run(transport="sse")
 
-19
+# 4.This starts the server and exposes your convert_currency tool at:http://localhost:8081/sse.
+```
 
-DailyDoseofDS.com
+```
+# 5. Now any CrewAI agent can connect to it using MCPServerAdapter. ow consume this tool from within a CrewAI agent.
 
-We give the agent a task description:
+import os
 
-Finally, we create the Crew, pass in the inputs and run it:
+from dotenv import load_dotenv
+from crewai import Agent, Task, Crew, LLM
+from crewai_tools import MCPServerAdapter
 
-Printing the result, we get the following output:
+load_dotenv()
 
-20
+# 6. connect to the MCP tool server. Define the server parameters to connect to your running tool (from server.py).
 
-DailyDoseofDS.com
+server_params = {
+    "url": "http://localhost:8081/sse",
+    "transport": "sse"
+}
 
+# 8. Now we use the discovered MCP tool in an agent:
+# This agent is assigned the convert_currency tool from the remote server. 
+# It can now call the tool just like a locally defined one.
+
+azure_openai_api_key = "1231" #os.getenv("AZURE_OPENAI_API_KEY")
+if not azure_openai_api_key:
+    raise ValueError("AZURE_OPENAI_API_KEY is not set")
+
+llm = LLM(
+    model="EGPT-4.1",
+    api_key=azure_openai_api_key,
+    base_url="https://es2.openai.azure.com/openai/v1"
+)
+
+with MCPServerAdapter(server_params) as mcp_tools:
+    currency_agent = Agent(
+        role="Currency Analyst",
+        goal="Convert currency using real-time exchange rates",
+        backstory="You help users convert between currencies using up-to-date market data.",
+        allow_delegation=False,
+        tools=[mcp_tools["currency_converter"]],
+        llm=llm,
+    )
+
+    # 9. Give the agent a task description.
+    conversion_task = Task(
+        description=(
+            "Convert {amount} {from_currency} to {to_currency} using real-time exchange rates. "
+            "Provide the equivalent amount and explain any relevant financial context."
+        ),
+        expected_output="A formatted result with exchange rate.",
+        agent=currency_agent,
+    )
+
+    # 10. Run the crew before the adapter closes the MCP connection.
+    crew = Crew(
+        agents=[currency_agent],
+        tasks=[conversion_task],
+        verbose=True,
+    )
+
+    response = crew.kickoff(inputs={
+        "amount": 100,
+        "from_currency": "USD",
+        "to_currency": "INR",
+    })
+
+    print(response)
+```
+
+<img width="1561" height="841" alt="image" src="https://github.com/user-attachments/assets/cf75421d-1359-4f3b-9a7b-29b8b9498287" />
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Client as client.py
+    participant Adapter as MCPServerAdapter
+    participant Agent as Currency Analyst
+    participant LLM as Azure OpenAI
+    participant Server as server.py (FastMCP)
+    participant Exchange as ExchangeRate-API
+
+    User->>Server: Start server.py
+    Server->>Server: Start SSE endpoint on port 8081
+
+    User->>Client: Run client.py
+    Client->>Adapter: Connect to http://localhost:8081/sse
+    Adapter->>Server: Establish MCP session and discover tools
+    Server-->>Adapter: Return currency_converter tool
+    Adapter-->>Client: Provide discovered tool
+
+    Client->>Agent: Create agent with currency_converter
+    Client->>Agent: kickoff(100 USD to INR)
+    Agent->>LLM: Request conversion
+    LLM-->>Agent: Select currency_converter
+    Agent->>Adapter: Invoke currency_converter(100, USD, INR)
+    Adapter->>Server: Send MCP tool call
+    Server->>Exchange: GET /pair/USD/INR/100
+
+    alt ExchangeRate-API succeeds
+        Exchange-->>Server: Conversion rate and converted amount
+        Server->>Server: Format and print conversion
+        Server-->>Adapter: Return formatted result
+        Adapter-->>Agent: Return tool result
+        Agent->>LLM: Generate final response
+        LLM-->>Agent: Conversion and context
+        Agent-->>Client: Final answer
+        Client-->>User: Print response
+    else API or request fails
+        Exchange-->>Server: Error response
+        Server-->>Adapter: Return tool error
+        Adapter-->>Agent: Return tool error
+        Agent-->>Client: Error-aware response
+        Client-->>User: Print response
+    end
+
+    Client->>Adapter: Close MCP session
+```
 4) Cooperation
 Multi-agent systems work best when agents collaborate and exchange feedback.
 Instead of one agent doing everything, a team of specialized agents can split tasks
