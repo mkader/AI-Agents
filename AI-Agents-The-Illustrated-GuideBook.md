@@ -90,43 +90,98 @@
 
 * In this example, we're building a real-time currency conversion tool inside CrewAI.
   * Instead of making an LLM guess exchange rates, we integrate a custom tool that fetches live exchange rates from an external API and provides some insights.
-  * how you can build one for your custom needs in the CrewAI framework.
-    1. installed the tools package ``` pip install crewai-tools
-    2. get api key - https://www.exchangerate-api.com/
-    3. standard import statements:
-
-Next, we define the input fields the tool expects using Pydantic.
-
-14
-
-DailyDoseofDS.com
-
-Now, we define the CurrencyConverterTool by inheriting from BaseTool:
-
-Every tool class should have the _run method which we will execute whenever
-the Agents wants to make use of it.
-For our use case, we implement it as follows:
-
-In the above code, we fetch live exchange rates using an API request. We also
-handle errors if the request fails or the currency code is invalid.
-Now, we define an agent that uses the tool for real-time currency analysis and
-attach our CurrencyConverterTool, allowing the agent to call it directly if needed:
-
-15
-
-DailyDoseofDS.com
-
-We assign a task to the currency_analyst agent.
-
-Finally, we create a Crew, assign the agent to the task, and execute it.
-
-Printing the response, we get the following output:
-
-Works as expected!
-
-16
-
-DailyDoseofDS.com
+    ```
+    installed the tools package ``` pip install crewai-tools ```
+    get api key - https://www.exchangerate-api.com/
+    
+    # 1. standard import statements:
+    from dotenv import load_dotenv
+    load_dotenv()
+    import os, requests
+    from typing import Type
+    from crewai.tools import BaseTool
+    from pydantic import BaseModel, Field
+    
+    # 2 define the input fields the tool expects using Pydantic.
+    class CurrencyConverterInput(BaseModel):
+        from_currency: str = Field(..., description="The currency code to convert from (e.g USD)")
+        to_currency: str = Field(..., description="The currency code to convert to (e.g EUR)")
+        amount: float = Field(..., description="The amount of currency to convert")
+    
+    # 3 define the CurrencyConverterTool by inheriting from BaseTool:
+    class CurrencyConverterTool(BaseTool):
+        name : str = "Currency Converter Tool"
+        description : str= "A tool to convert amount from one type of currency to another"
+        input_model: Type[BaseModel] = CurrencyConverterInput
+        api_key: str = "asdasdasds" #os.getenv("EXCHANGE_RATE_API_KEY")
+    
+        # 4 Every tool class should have the _run method which we will execute whenever the Agents wants to make use of it.
+        def _run(self, amount: float, from_currency: str, to_currency: str) -> str:
+            url = f"https://v6.exchangerate-api.com/v6/{self.api_key}/latest/{from_currency}"
+            print(url)
+            response = requests.get(url)
+            data = response.json()
+            if data["result"] == "success":
+                rate =  amount * data["conversion_rates"][to_currency]
+                return f"{amount} {from_currency} is equal to {rate:.2f} {to_currency}"
+            else:
+                raise ValueError("Failed to convert currency")
+    
+    # 5. define an agent that uses the tool for real-time currency analysis and
+    # attach our CurrencyConverterTool, allowing the agent to call it directly if needed:
+    
+    from crewai import Agent, LLM
+    
+    llm = LLM(
+        model="EGPT-4.1",
+        api_key="asdd",
+        base_url="https://eus2.openai.azure.com/openai/v1"
+    )
+    
+    currency_analyst_agent = Agent(
+        role="Currency Analyst",
+        goal="Provide real time currency conversion rates and financial insights",
+        backstory=(
+            "You are a financial expert with deep knowledge of global exchange rates. "
+            "You help users with currency conversion and financial decision-making."
+        ),
+        tools=[CurrencyConverterTool()],
+        llm=llm,
+        verbose=True,
+    )
+    
+    # 6. assign a task to the currency_analyst agent.
+    
+    from crewai import Task
+    
+    currency_conversion_task = Task(
+        description=(
+            "Convert {amount} {from_currency} to {to_currency} using real-time exchange rates. "
+            "Provide the equivalent amount and explain any relevant financial context."
+        ),
+        expected_output= "A detailed response including the converted amount and financial insights.",
+        agent=currency_analyst_agent
+    )
+    
+    # 7. we create a Crew, assign the agent to the task, and execute it.
+    
+    from crewai import Crew, Process
+    
+    crew = Crew(
+        agents=[currency_analyst_agent],
+        tasks=[currency_conversion_task],
+        process=Process.sequential
+    )
+    
+    response = crew.kickoff(inputs={
+        "amount": 100,
+        "from_currency": "USD",
+        "to_currency": "EUR"
+    })
+    
+    print(response)
+    ```
+    <img width="815" height="548" alt="image" src="https://github.com/user-attachments/assets/1c684494-ce0b-4517-a44c-61065a658e00" />
 
 #3.2) Custom tools via MCP
 Now, let’s take it a step further.
