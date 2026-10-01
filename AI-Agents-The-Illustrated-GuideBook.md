@@ -378,55 +378,38 @@ sequenceDiagram
 
     Client->>Adapter: Close MCP session
 ```
-4) Cooperation
-Multi-agent systems work best when agents collaborate and exchange feedback.
-Instead of one agent doing everything, a team of specialized agents can split tasks
-and improve each other’s outputs.
+### 4) Cooperation
+* Multi-agent systems work best when agents collaborate and exchange feedback.
+* Instead of one agent doing everything, a team of specialized agents can split tasks and improve each other’s outputs.
+<img width="491" height="365" alt="image" src="https://github.com/user-attachments/assets/5b4defa1-83e7-47ab-9aaf-7420453d1c97" />
 
-Consider an AI-powered financial analysis system:
-● One agent gathers data
-● another assesses risk,
-● a third builds strategy,
-● and a fourth writes the report
-Collaboration leads to smarter, more accurate results.
-The best practice is to enable agent collaboration by designing workflows where
-agents can exchange insights and refine their responses together.
+* Consider an AI-powered financial analysis system:
+  * One agent gathers data
+  * another assesses risk,
+  * a third builds strategy,
+  * and a fourth writes the report
+* Collaboration leads to smarter, more accurate results.
+* The best practice is to enable agent collaboration by designing workflows where agents can exchange insights and refine their responses together.
 
-21
+### 5) Guardrails
+* Agents are powerful but without constraints, they can go off track. They might hallucinate, loop endlessly, or make bad calls.
+* Guardrails ensure that agents stay on track and maintain quality standards.
+<img width="565" height="217" alt="image" src="https://github.com/user-attachments/assets/cde40361-7ef8-4260-8416-7c5d6cc1106d" />
 
-DailyDoseofDS.com
+* Examples of useful guardrails include:
+  * Limiting tool usage: Prevent an agent from overusing APIs or generating irrelevant queries.
+  * Setting validation checkpoints: Ensure outputs meet predefined criteria before moving to the next step.
+  * Establishing fallback mechanisms: If an agent fails to complete a task, another agent or human reviewer can intervene.
+* For example, an AI-powered legal assistant should avoid outdated laws or false claims - guardrails ensure that.
 
-5) Guardrails
-Agents are powerful but without constraints, they can go off track. They might
-hallucinate, loop endlessly, or make bad calls.
-Guardrails ensure that agents stay on track and maintain quality standards.
+### 6) Memory
+* memory, which is one of the most critical components of AI agents.
+* Without memory, an agent would start fresh every time, losing all context from previous interactions.
+* With memory, agents can improve over time, remember past actions, and create more cohesive responses.
+<img width="568" height="218" alt="image" src="https://github.com/user-attachments/assets/01b6e223-7d8b-4f6c-be81-34a021c668c6" />
 
-Examples of useful guardrails include:
-● Limiting tool usage: Prevent an agent from overusing APIs or generating
-irrelevant queries.
-● Setting validation checkpoints: Ensure outputs meet predefined criteria
-before moving to the next step.
-● Establishing fallback mechanisms: If an agent fails to complete a task,
-another agent or human reviewer can intervene.
-For example, an AI-powered legal assistant should avoid outdated laws or false
-claims - guardrails ensure that.
-6) Memory
-Finally, we have memory, which is one of the most critical components of AI
-agents.
-
-22
-
-DailyDoseofDS.com
-Without memory, an agent would start fresh every time, losing all context from
-previous interactions. With memory, agents can improve over time, remember
-past actions, and create more cohesive responses.
-
-Different types of memory in AI agents include:
-● Short-term memory – Exists only during execution (e.g., recalling recent
-conversation history).
-● Long-term memory – Persists after execution (e.g., remembering user
-preferences over multiple interactions).
-● Entity memory – Stores information about key subjects discussed (e.g.,
-tracking customer details in a CRM agent).
-For example, in an AI-powered tutoring system, memory allows the agent to
-recall past lessons, tailor feedback, and avoid repetition.
+* Different types of memory in AI agents include:
+  * Short-term memory – Exists only during execution (e.g., recalling recent conversation history).
+  * Long-term memory – Persists after execution (e.g., remembering user preferences over multiple interactions).
+  * Entity memory – Stores information about key subjects discussed (e.g., tracking customer details in a CRM agent).
+* For example, in an AI-powered tutoring system, memory allows the agent to recall past lessons, tailor feedback, and avoid repetition.
