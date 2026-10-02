@@ -5,22 +5,31 @@
   3. Obtain a list of papers along with citations.
   4. Find that some sources are outdated, so you refine your query.
   5. Finally, after multiple iterations, you get a useful output.
-  <img width="540" height="288" alt="image" src="https://github.com/user-attachments/assets/698d2477-9836-48f6-9761-be917726616f" />
+     
+  <img width="300" height="150" alt="image" src="https://github.com/user-attachments/assets/698d2477-9836-48f6-9761-be917726616f" />
 
 * This iterative process takes time and effort, requiring you to act as the decision-maker at every step.
 
 * How AI agents handle this differently:
   * A Research Agent autonomously searches and retrieves relevant AI research papers from arXiv, Semantic Scholar, or Google Scholar.
-    <img width="510" height="203" alt="image" src="https://github.com/user-attachments/assets/6a4003ae-78e3-476e-a867-e5c6e264a932" />
+    
+    <img width="250" height="100" alt="image" src="https://github.com/user-attachments/assets/6a4003ae-78e3-476e-a867-e5c6e264a932" />
+    
       * A Filtering Agent scans the retrieved papers, identifying the most relevant ones based on citation count, publication date, and keywords.
-          <img width="551" height="150" alt="image" src="https://github.com/user-attachments/assets/dbde5a0c-a6d4-4dda-8277-57ee7eacb257" />
+
+          <img width="300" height="75" alt="image" src="https://github.com/user-attachments/assets/dbde5a0c-a6d4-4dda-8277-57ee7eacb257" />
+          
       * A Summarization Agent extracts key insights and condenses them into an easy-to-read report.
-          <img width="552" height="132" alt="image" src="https://github.com/user-attachments/assets/c7e6da38-945b-447b-94a5-95b6a19c377a" />
+
+          <img width="300" height="75" alt="image" src="https://github.com/user-attachments/assets/c7e6da38-945b-447b-94a5-95b6a19c377a" />
+          
       * A Formatting Agent structures the final report, ensuring it follows a clear, professional layout.
-          <img width="577" height="132" alt="image" src="https://github.com/user-attachments/assets/e48180ee-e0f1-4e52-aa71-a7965e2dedaa" />
+        
+          <img width="300" height="75" alt="image" src="https://github.com/user-attachments/assets/e48180ee-e0f1-4e52-aa71-a7965e2dedaa" />
 
 * AI agents not only execute the research process end-to-end but also self-refine their outputs, ensuring the final report is comprehensive, up-to-date, and well-structured - all without requiring human intervention at every step.
-  <img width="472" height="412" alt="image" src="https://github.com/user-attachments/assets/e069d99e-e4c1-4a90-9f05-f35d3b9784ff" />
+  
+  <img width="250" height="200" alt="image" src="https://github.com/user-attachments/assets/e069d99e-e4c1-4a90-9f05-f35d3b9784ff" />
 
 * AI Agents are autonomous systems that can reason, think, plan, figure out the relevant sources and extract information from them when needed, take actions, and even correct themselves if something goes wrong.
 
@@ -56,7 +65,7 @@
 * Boost an agent’s performance is by giving it a clear, specific role.
 * A generic AI assistant may give vague answers. But define it as a “Senior contract lawyer,” and it responds with legal precision and context.
 * Why? Because role assignment shapes the agent’s reasoning and retrieval process. The more specific the role, the sharper and more relevant the output.
-  <img width="522" height="173" alt="image" src="https://github.com/user-attachments/assets/33c26f7b-24c5-4612-be25-885f3407526c" />
+  <img width="250" height="100" alt="image" src="https://github.com/user-attachments/assets/33c26f7b-24c5-4612-be25-885f3407526c" />
 
 ### 2) Focus/Tasks
 * Focus is key to reducing hallucinations and improving accuracy.
@@ -65,7 +74,8 @@
 * For example, a marketing agent should stick to messaging, tone, and audience not pricing or market analysis.
 * Instead of trying to make one agent do everything, a better approach is to use multiple agents, each with a specific and narrow focus.
 * Specialized agents perform better - every time.
-  <img width="492" height="268" alt="image" src="https://github.com/user-attachments/assets/f0bef388-fc5f-4709-9e2f-57ee647bf16b" />
+  
+  <img width="250" height="150" alt="image" src="https://github.com/user-attachments/assets/f0bef388-fc5f-4709-9e2f-57ee647bf16b" />
 
 ### 3) Tools
 * Agents get smarter when they can use the right tools.
@@ -74,7 +84,8 @@
   * A web search tool for retrieving recent publications.
   * A summarization model for condensing long research papers.
   * A citation manager to properly format references.
-  <img width="532" height="368" alt="image" src="https://github.com/user-attachments/assets/f4bedd3f-9a5a-4d37-b2e7-c326f54ce8c0" />
+    
+  <img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/f4bedd3f-9a5a-4d37-b2e7-c326f54ce8c0" />
 
 * But if you add unnecessary tools—like a speech-to-text module or a code execution environment—it could confuse the agent and reduce efficiency.
   
@@ -86,7 +97,8 @@
   * Execute code to perform calculations or data transformations.
   * Analyze images, PDFs, and documents beyond just text inputs.
 * CrewAI supports several tools that you can integrate with Agents, as depicted below:
-  <img width="511" height="515" alt="image" src="https://github.com/user-attachments/assets/e14fe7a7-7fc1-488f-a661-923a3d1e421e" />
+  
+  <img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/e14fe7a7-7fc1-488f-a661-923a3d1e421e" />
 
 * In this example, we're building a real-time currency conversion tool inside CrewAI.
   * Instead of making an LLM guess exchange rates, we integrate a custom tool that fetches live exchange rates from an external API and provides some insights.
@@ -182,7 +194,7 @@
     
     print(response)
     ```
-    <img width="815" height="548" alt="image" src="https://github.com/user-attachments/assets/1c684494-ce0b-4517-a44c-61065a658e00" />
+    <img width="450" height="300" alt="image" src="https://github.com/user-attachments/assets/1c684494-ce0b-4517-a44c-61065a658e00" />
 
     ```mermaid
     sequenceDiagram
@@ -330,7 +342,7 @@ with MCPServerAdapter(server_params) as mcp_tools:
     print(response)
 ```
 
-<img width="1561" height="841" alt="image" src="https://github.com/user-attachments/assets/cf75421d-1359-4f3b-9a7b-29b8b9498287" />
+<img width="750" height="450" alt="image" src="https://github.com/user-attachments/assets/cf75421d-1359-4f3b-9a7b-29b8b9498287" />
 
 ```mermaid
 sequenceDiagram
@@ -381,7 +393,7 @@ sequenceDiagram
 ### 4) Cooperation
 * Multi-agent systems work best when agents collaborate and exchange feedback.
 * Instead of one agent doing everything, a team of specialized agents can split tasks and improve each other’s outputs.
-<img width="491" height="365" alt="image" src="https://github.com/user-attachments/assets/5b4defa1-83e7-47ab-9aaf-7420453d1c97" />
+<img width="250" height="200" alt="image" src="https://github.com/user-attachments/assets/5b4defa1-83e7-47ab-9aaf-7420453d1c97" />
 
 * Consider an AI-powered financial analysis system:
   * One agent gathers data
@@ -394,7 +406,7 @@ sequenceDiagram
 ### 5) Guardrails
 * Agents are powerful but without constraints, they can go off track. They might hallucinate, loop endlessly, or make bad calls.
 * Guardrails ensure that agents stay on track and maintain quality standards.
-<img width="565" height="217" alt="image" src="https://github.com/user-attachments/assets/cde40361-7ef8-4260-8416-7c5d6cc1106d" />
+<img width="300" height="100" alt="image" src="https://github.com/user-attachments/assets/cde40361-7ef8-4260-8416-7c5d6cc1106d" />
 
 * Examples of useful guardrails include:
   * Limiting tool usage: Prevent an agent from overusing APIs or generating irrelevant queries.
@@ -406,7 +418,7 @@ sequenceDiagram
 * memory, which is one of the most critical components of AI agents.
 * Without memory, an agent would start fresh every time, losing all context from previous interactions.
 * With memory, agents can improve over time, remember past actions, and create more cohesive responses.
-<img width="568" height="218" alt="image" src="https://github.com/user-attachments/assets/01b6e223-7d8b-4f6c-be81-34a021c668c6" />
+<img width="300" height="100" alt="image" src="https://github.com/user-attachments/assets/01b6e223-7d8b-4f6c-be81-34a021c668c6" />
 
 * Different types of memory in AI agents include:
   * Short-term memory – Exists only during execution (e.g., recalling recent conversation history).
