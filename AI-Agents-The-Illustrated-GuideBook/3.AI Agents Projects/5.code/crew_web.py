@@ -1,0 +1,65 @@
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from pydantic import BaseModel, Field
+
+class WebWriterReport(BaseModel):
+    page_title: str = Field(description="The title explaining how the brand was used in an individual web page")
+    page_link: str = Field(description="The link to the scraped content")
+    content_lines: list[str] = Field(description="The bullet points within the scraped content that are relevant to the brand")
+
+class WebReport(BaseModel):   
+    content: list[WebWriterReport] = Field(description=("A list of extracted content with title, the page link, "
+                                                        "and the bullet points within each unique content page. "
+                                                        "The size of the output list will be the same as the number of web pages in the input data.")
+                                                        )
+    
+llm = LLM(
+        model="ollama/llama3.2:3b",
+        base_url="http://localhost:11434"
+    )
+
+
+@CrewBase
+class WebCrew:
+    """Web Analysis Crew"""
+
+    agents_config = "config/web_agents.yaml"
+    tasks_config = "config/web_tasks.yaml"
+
+    @agent
+    def analysis_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config["analysis_agent"],
+            llm=llm,
+        )
+        
+    @task
+    def analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["analysis_task"],
+        )
+    
+    @agent
+    def writer_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config["writer_agent"],
+            llm=llm,
+        )
+
+    @task
+    def write_report_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["write_report_task"],
+            output_pydantic=WebReport,
+        )
+
+    @crew
+    def crew(self) -> Crew:
+        """Creates the Web Analysis Crew"""
+
+        return Crew(
+            agents=self.agents,
+            tasks=self.tasks,
+            process=Process.sequential,
+            verbose=True,
+        )
