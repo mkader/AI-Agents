@@ -25,9 +25,9 @@ def load_llm_azure():
     #)
     azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
     llm = LLM(
-        model="EnservioGPT-4.1",
+        model="EGPT-4.1",
         api_key=azure_openai_api_key,
-        base_url="https://enservious2.openai.azure.com/openai/v1"
+        base_url="https://eus2.openai.azure.com/openai/v1"
     )
     return llm
 
