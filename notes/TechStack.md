@@ -165,7 +165,7 @@
       amount: float = Field(..., description="The amount of currency to convert")
     ```
 
-* [https://lightning.ai/litserve](LightningAI's LitServe)
+* [LightningAI's LitServe](https://lightning.ai/litserve)
 	* It's an open-source, Pythonic AI model serving engine built on top of FastAPI by the creators of PyTorch Lightning at Lightning AI.
 	* Core Architecture
 		* LitAPI: An abstract base class that lets you write custom inference logic by defining 4 main methods:
@@ -258,97 +258,171 @@
 		     -H "Content-Type: application/json" \
 		     -d '{"prompt": "What are the three primary colors?", "max_new_tokens": 128}'
 		```
-* Retrieval-Augmented Generation (RAG) Code -
-	* To deploy a RAG pipeline using LitServe, encapsulate both the vector db retrieval step and the LLM generation step inside the single LitAPI class [LitServe].
-	* Because RAG applications perform heavy I/O tasks (searching a database) alongside heavy compute tasks (running the LLM), LitServe’s architecture helps you isolate these steps efficiently.
-	* This code implements a complete RAG workflow using ChromaDB (a lightweight vector database) and a Llama 3.2 model via Hugging Face.
-```
-import litserve as ls
-import chromadb
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-
-class RAGAPI(ls.LitAPI):
-    def setup(self, device):
-        # 1. Initialize the vector database client
-        # In production, change this to your persistent cloud DB (e.g., Pinecone, Qdrant)
-        self.chroma_client = chromadb.Client()
-        self.collection = self.chroma_client.get_or_create_collection(name="knowledge_base")
-        
-        # Seed some mock domain data into the vector DB for demonstration
-        self.collection.add(
-            documents=[
-                "LitServe is an open-source AI engine built on top of FastAPI by Lightning AI.",
-                "To optimize performance, LitServe provides built-in dynamic batching.",
-                "LitServe supports native streaming using standard Python generators."
-            ],
-            ids=["doc1", "doc2", "doc3"]
-        )
-
-        # 2. Load the LLM and its Tokenizer into memory
-        self.model_name = "meta-llama/Llama-3.2-1B-Instruct"
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-            device_map=device
-        )
-        self.device = device
-
-    def decode_request(self, request):
-        # Extract the user's query from the incoming HTTP payload
-        return request.get("query")
-
-    def predict(self, query):
-        # 3. Retrieve relevant context from the vector database
-        results = self.collection.query(
-            query_texts=[query],
-            n_results=2
-        )
-        # Flatten retrieved document texts into a single context string
-        context = " ".join(results['documents'][0])
-        
-        # 4. Construct a RAG Prompt injecting the context
-        rag_prompt = (
-            f"Context information is below.\n"
-            f"---------------------\n"
-            f"{context}\n"
-            f"---------------------\n"
-            f"Given the context information and not prior knowledge, "
-            f"answer the query: {query}"
-        )
-        
-        # 5. Tokenize and pass to the LLM
-        messages = [{"role": "user", "content": rag_prompt}]
-        input_ids = self.tokenizer.apply_chat_template(
-            messages, 
-            add_generation_prompt=True, 
-            return_tensors="pt"
-        ).to(self.device)
-        
-        outputs = self.model.generate(
-            input_ids, 
-            max_new_tokens=150,
-            eos_token_id=self.tokenizer.eos_token_id
-        )
-        
-        generated_tokens = outputs[input_ids.shape[-1]:]
-        return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
-
-    def encode_response(self, output):
-        # Package and return the final answer
-        return {"answer": output}
-
-if __name__ == "__main__":
-    api = RAGAPI()
-    server = ls.LitServer(api, accelerator="auto")
-    server.server_start(port=8000)
-
-{
-  "query": "What optimization feature does LitServe provide?"
-}
-
-{
-  "answer": "LitServe provides built-in dynamic batching to optimize performance."
-}
-```
+	* Retrieval-Augmented Generation (RAG) Code -
+		* To deploy a RAG pipeline using LitServe, encapsulate both the vector db retrieval step and the LLM generation step inside the single LitAPI class [LitServe].
+		* Because RAG applications perform heavy I/O tasks (searching a database) alongside heavy compute tasks (running the LLM), LitServe’s architecture helps you isolate these steps efficiently.
+		* This code implements a complete RAG workflow using ChromaDB (a lightweight vector database) and a Llama 3.2 model via Hugging Face.
+		```
+		import litserve as ls
+		import chromadb
+		from transformers import AutoModelForCausalLM, AutoTokenizer
+		import torch
+		
+		class RAGAPI(ls.LitAPI):
+		    def setup(self, device):
+		        # 1. Initialize the vector database client
+		        # In production, change this to your persistent cloud DB (e.g., Pinecone, Qdrant)
+		        self.chroma_client = chromadb.Client()
+		        self.collection = self.chroma_client.get_or_create_collection(name="knowledge_base")
+		        
+		        # Seed some mock domain data into the vector DB for demonstration
+		        self.collection.add(
+		            documents=[
+		                "LitServe is an open-source AI engine built on top of FastAPI by Lightning AI.",
+		                "To optimize performance, LitServe provides built-in dynamic batching.",
+		                "LitServe supports native streaming using standard Python generators."
+		            ],
+		            ids=["doc1", "doc2", "doc3"]
+		        )
+		
+		        # 2. Load the LLM and its Tokenizer into memory
+		        self.model_name = "meta-llama/Llama-3.2-1B-Instruct"
+		        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+		        self.model = AutoModelForCausalLM.from_pretrained(
+		            self.model_name,
+		            torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+		            device_map=device
+		        )
+		        self.device = device
+		
+		    def decode_request(self, request):
+		        # Extract the user's query from the incoming HTTP payload
+		        return request.get("query")
+		
+		    def predict(self, query):
+		        # 3. Retrieve relevant context from the vector database
+		        results = self.collection.query(
+		            query_texts=[query],
+		            n_results=2
+		        )
+		        # Flatten retrieved document texts into a single context string
+		        context = " ".join(results['documents'][0])
+		        
+		        # 4. Construct a RAG Prompt injecting the context
+		        rag_prompt = (
+		            f"Context information is below.\n"
+		            f"---------------------\n"
+		            f"{context}\n"
+		            f"---------------------\n"
+		            f"Given the context information and not prior knowledge, "
+		            f"answer the query: {query}"
+		        )
+		        
+		        # 5. Tokenize and pass to the LLM
+		        messages = [{"role": "user", "content": rag_prompt}]
+		        input_ids = self.tokenizer.apply_chat_template(
+		            messages, 
+		            add_generation_prompt=True, 
+		            return_tensors="pt"
+		        ).to(self.device)
+		        
+		        outputs = self.model.generate(
+		            input_ids, 
+		            max_new_tokens=150,
+		            eos_token_id=self.tokenizer.eos_token_id
+		        )
+		        
+		        generated_tokens = outputs[input_ids.shape[-1]:]
+		        return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
+		
+		    def encode_response(self, output):
+		        # Package and return the final answer
+		        return {"answer": output}
+		
+		if __name__ == "__main__":
+		    api = RAGAPI()
+		    server = ls.LitServer(api, accelerator="auto")
+		    server.server_start(port=8000)
+		
+		{
+		  "query": "What optimization feature does LitServe provide?"
+		}
+		
+		{
+		  "answer": "LitServe provides built-in dynamic batching to optimize performance."
+		}
+		```
+  
+* [FastMCP](https://gofastmcp.com/getting-started/welcome) created by [prefect](https://www.prefect.io/)
+	* It's a high-level, Pythonic framework designed to make building MCP servers and clients as effortless as writing standard FastAPI applications.
+	* it abstracts away the complex JSON-RPC plumbing, protocol handshakes, and manual schema writing required by the raw MCP SDK.
+	* Core Concepts
+		* Servers: Expose local functions or data sources as discoverable MCP tools, resources, and prompts using simple decorators like @mcp.tool.
+		* Clients: Provide a typed, programmatic interface (fastmcp.Client) to connect and interact with MCP servers asynchronously without manual connection lifecycle management.
+		* Automatic Schemas: Automatically inspects Python type hints and docstrings to generate valid JSON schemas for Large Language Models (LLMs).
+		* Transports: Supports standard communication layers like local STDIO and remote HTTP streams seamlessly.
+	* Code - Setting up a basic server
+		```
+		from fastmcp import FastMCP
+		
+		mcp = FastMCP(name="MyServer")
+		
+		@mcp.tool
+		def greet(name: str) -> str:
+		    """Greet a user by name."""
+		    return f"Hello, {name}!"
+		
+		if __name__ == "__main__":
+		    mcp.run()
+		
+		• claude_desktop_config.json
+		
+		{
+		  "mcpServers": {
+		    "my-fastmcp-server": {
+		      "command": "uv",
+		      "args": ["run", "--with", "fastmcp", "path/to/your/server.py"]
+		    }
+		  }
+		}
+		
+		VSC
+		{
+			"servers": {
+				"doc-writer": {
+					"url": "http://127.0.0.1:8000/sse",
+					"type": "http"
+				},
+				"mcp-rag-app": {
+					"type": "stdio",
+					"command": "C:/solera/ai/mcp/.venv/Scripts/python.exe",
+					"args": ["C:/ai/mcp/usecase_02/server.py"]
+				},
+			    "15-mcp-apps": {
+		            "url": "http://localhost:3001/mcp",
+		            "type": "http"
+		        }
+			},
+			"inputs": []
+		}
+		
+		client code
+		
+		import asyncio
+		from fastmcp import Client
+		
+		async def main() -> None:
+		    # Connect to a local server script (auto-manages subprocess transport)
+		    # Or use a URL for HTTP: Client("http://localhost:8000/mcp")
+		    async with Client("server.py") as client:
+		        # List available tools
+		        tools = await client.list_tools()
+		        print("Available tools:", [t.name for t in tools])
+		
+		        # Call a specific tool
+		        result = await client.call_tool("greet", {"name": "Alice"})
+		        print("Tool result:", result.data)
+		
+		if __name__ == "__main__":
+		    asyncio.run(main())
+		```
