@@ -426,3 +426,25 @@
 		if __name__ == "__main__":
 		    asyncio.run(main())
 		```
+* [Ollama](https://ollama.com/)
+	* It's a free, open-source platform that lets you run AI LLMs (like Llama, Gemma, DeepSeek, and Mistral)) directly on your own/local computer (CPU or GPU) rather than in the cloud.
+	* What Ollama Does
+		• Complete Privacy: Your prompts, files, and data never leave your machine.
+		• No Subscriptions or API Fees: Running local models is completely free after you own the hardware.
+		• Offline Capability: You can use AI models without an internet connection.
+		• Like Docker for AI: It acts as a lightweight package manager that simplifies downloading, managing, and running complex AI weights with a single command.
+	* Key Features & How It Works
+		* CLI - manage models through your terminal, 
+			• ollama run <model>: Downloads and starts a chat session with a model.
+			• ollama pull <model>: Downloads a model to your machine without launching it.
+			• ollama list (shows all installed models), ollama rm <model> (Deletes a model)
+		• Desktop App & GUIs
+		• Built-in HTTP API: It exposes a local server (default port 11434), allowing developers to connect Ollama models to custom apps, Python scripts, or tools like LangChain and Open WebUI.
+	* Hardware Requirements
+		* 8 GB RAM: Can run smaller models (roughly 3 to 4 billion parameters).
+		* 16 GB RAM: Can handle mid-sized models up to around 20 billion parameters.
+		* 32 GB RAM or more: Supports larger models (27 to 30+ billion parameters).
+ 			* Best for General Chat & Logic: Llama 3.3 (70B) or Llama 3.1 (70B) ``` Command: ollama run llama3.3:70b ```
+			* Best for Coding, mathematics, multilingual tasks & Speed: Qwen 2.5 (14B or 32B) ```qwen2.5:32b or qwen2.5:14b ```
+			* Best for Advanced Reasoning (complex problem-solving, math, and deep logical thinking) : DeepSeek-R1 (14B or 32B) ``` deepseek-r1:32b ```
+			* Best "Lightweight & Fast" All-Rounder ( daily text generation, summarizing, and light coding) : Mistral (7B) or Gemma 2 (9B) ``` mistral or gemma2:9b ```
