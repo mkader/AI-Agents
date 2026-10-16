@@ -31,25 +31,28 @@
 			```
 			pip install requests
        	
-			import requests
-			import json
+			import json, os, requests
+			from dotenv import load_dotenv
 			
-			url = "https://serper.dev"
+			load_dotenv()
 			
-			payload = json.dumps({
-			  "q": "SpaceX Falcon 9 launch",
-			  "gl": "us",     # Country code (Geotargeting)
-			  "hl": "en"      # Interface language
-			})
+			url = "https://google.serper.dev/search"
 			
-			headers = {
-			  'X-API-KEY': 'your_serper_api_key_here',
-			  'Content-Type': 'application/json'
+			payload = {
+			    "q": "SpaceX Falcon 9 launch",
+			    "gl": "us",     # Country code (Geotargeting)
+			    "hl": "en"      # Interface language
 			}
 			
-			response = requests.request("POST", url, headers=headers, data=payload)
+			headers = {
+			    'X-API-KEY': os.environ.get("SERPER_API_KEY"),
+			    'Content-Type': 'application/json'
+			}
 			
-			# Print organized organic search results
+			response = requests.post(url, headers=headers, json=payload, timeout=30)
+			response.raise_for_status()
+			
+			# Print the complete search response as formatted JSON.
 			print(json.dumps(response.json(), indent=2))
 			```
     * DirectoryReadTool - List the contents of a directory
@@ -189,13 +192,12 @@
 		class LLMAPI(ls.LitAPI):
 		    def setup(self, device):
 		        # 1. Load the model and tokenizer into memory
-		        self.model_name = "meta-llama/Llama-3.2-1B-Instruct" 
+		        self.model_name = "Qwen/Qwen2.5-1.5B-Instruct"
 		        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 		        self.model = AutoModelForCausalLM.from_pretrained(
 		            self.model_name, 
-		            torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-		            device_map=device
-		        )
+		            dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+		        ).to(device)
 		        self.device = device
 		
 		    def decode_request(self, request):
@@ -207,21 +209,22 @@
 		        
 		        # 3. Format inputs for chat-based LLMs
 		        messages = [{"role": "user", "content": prompt}]
-		        input_ids = self.tokenizer.apply_chat_template(
+		        inputs = self.tokenizer.apply_chat_template(
 		            messages, 
 		            add_generation_prompt=True, 
-		            return_tensors="pt"
+		            return_tensors="pt",
+		            return_dict=True
 		        ).to(self.device)
 		        
 		        # 4. Generate text tokens
 		        outputs = self.model.generate(
-		            input_ids, 
+		            **inputs, 
 		            max_new_tokens=max_new_tokens,
 		            eos_token_id=self.tokenizer.eos_token_id
 		        )
 		        
 		        # 5. Extract only the newly generated tokens
-		        generated_tokens = outputs[0][input_ids.shape[-1]:]
+		        generated_tokens = outputs[0][inputs["input_ids"].shape[-1]:]
 		        return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
 		
 		    def encode_response(self, output):
@@ -233,16 +236,15 @@
 		    api = LLMAPI()
 		    
 		    # Configure the production server with dynamic batching
-		    server = ls.LitServer(
-		        api, 
-		        accelerator="auto", 
-		        max_batch_size=4, 
-		        batch_timeout=0.05
-		    )
+		    server = ls.LitServer(api, accelerator="auto")
 		    
 		    # Start the server on port 8000
-		    server.server_start(port=8000)
-		
+		    server.run(port=8000)
+
+  		> hf auth login #hugging face to download model
+          python app.py
+
+  		http://127.0.0.1:8000/docs	
 		input
 		{
 		  "prompt": "What are the three primary colors?",
@@ -254,9 +256,12 @@
 		  "response": "The three primary colors are red, yellow, and blue. These colors cannot be created by mixing other colors together."
 		}
 		
-		curl -X POST http://127.0.0.1:8000/predict \
-		     -H "Content-Type: application/json" \
-		     -d '{"prompt": "What are the three primary colors?", "max_new_tokens": 128}'
+		curl -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"prompt": "What are the three primary colors?", "max_new_tokens": 128}'
+  		
+		Invoke-RestMethod -Uri http://127.0.0.1:8000/predict -Method Post -ContentType 'application/json' -Body '{"prompt":"What are the three primary colors?","max_new_tokens":30}' -TimeoutSec 180 | ConvertTo-Json
+		{
+		    "response":  "The three primary colors are red, blue, and yellow. These colors cannot be made by mixing other colors; they are the base colors from which all"
+		}
 		```
 	* Retrieval-Augmented Generation (RAG) Code -
 		* To deploy a RAG pipeline using LitServe, encapsulate both the vector db retrieval step and the LLM generation step inside the single LitAPI class [LitServe].
@@ -264,9 +269,8 @@
 		* This code implements a complete RAG workflow using ChromaDB (a lightweight vector database) and a Llama 3.2 model via Hugging Face.
 		```
 		import litserve as ls
-		import chromadb
+		import chromadb, torch
 		from transformers import AutoModelForCausalLM, AutoTokenizer
-		import torch
 		
 		class RAGAPI(ls.LitAPI):
 		    def setup(self, device):
@@ -274,25 +278,24 @@
 		        # In production, change this to your persistent cloud DB (e.g., Pinecone, Qdrant)
 		        self.chroma_client = chromadb.Client()
 		        self.collection = self.chroma_client.get_or_create_collection(name="knowledge_base")
-		        
+		
 		        # Seed some mock domain data into the vector DB for demonstration
 		        self.collection.add(
 		            documents=[
-		                "LitServe is an open-source AI engine built on top of FastAPI by Lightning AI.",
-		                "To optimize performance, LitServe provides built-in dynamic batching.",
-		                "LitServe supports native streaming using standard Python generators."
+		            "LitServe is an open-source AI engine built on top of FastAPI by Lightning AI.",
+		            "To optimize performance, LitServe provides built-in dynamic batching.",
+		            "LitServe supports native streaming using standard Python generators."
 		            ],
 		            ids=["doc1", "doc2", "doc3"]
 		        )
 		
 		        # 2. Load the LLM and its Tokenizer into memory
-		        self.model_name = "meta-llama/Llama-3.2-1B-Instruct"
+		        self.model_name = "Qwen/Qwen2.5-1.5B-Instruct"
 		        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 		        self.model = AutoModelForCausalLM.from_pretrained(
 		            self.model_name,
-		            torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-		            device_map=device
-		        )
+		            dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+		        ).to(device)
 		        self.device = device
 		
 		    def decode_request(self, request):
@@ -307,7 +310,7 @@
 		        )
 		        # Flatten retrieved document texts into a single context string
 		        context = " ".join(results['documents'][0])
-		        
+		
 		        # 4. Construct a RAG Prompt injecting the context
 		        rag_prompt = (
 		            f"Context information is below.\n"
@@ -317,22 +320,23 @@
 		            f"Given the context information and not prior knowledge, "
 		            f"answer the query: {query}"
 		        )
-		        
+		
 		        # 5. Tokenize and pass to the LLM
 		        messages = [{"role": "user", "content": rag_prompt}]
-		        input_ids = self.tokenizer.apply_chat_template(
+		        inputs = self.tokenizer.apply_chat_template(
 		            messages, 
 		            add_generation_prompt=True, 
-		            return_tensors="pt"
+		            return_tensors="pt",
+		            return_dict=True
 		        ).to(self.device)
-		        
+		
 		        outputs = self.model.generate(
-		            input_ids, 
+		            **inputs, 
 		            max_new_tokens=150,
 		            eos_token_id=self.tokenizer.eos_token_id
 		        )
-		        
-		        generated_tokens = outputs[input_ids.shape[-1]:]
+		
+		        generated_tokens = outputs[0][inputs["input_ids"].shape[-1]:]
 		        return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
 		
 		    def encode_response(self, output):
@@ -342,7 +346,7 @@
 		if __name__ == "__main__":
 		    api = RAGAPI()
 		    server = ls.LitServer(api, accelerator="auto")
-		    server.server_start(port=8000)
+		    server.run(port=8000)
 		
 		{
 		  "query": "What optimization feature does LitServe provide?"
@@ -376,7 +380,6 @@
 		    mcp.run()
 		
 		• claude_desktop_config.json
-		
 		{
 		  "mcpServers": {
 		    "my-fastmcp-server": {
@@ -395,7 +398,7 @@
 				},
 				"mcp-rag-app": {
 					"type": "stdio",
-					"command": "C:/solera/ai/mcp/.venv/Scripts/python.exe",
+					"command": "C:/ai/mcp/.venv/Scripts/python.exe",
 					"args": ["C:/ai/mcp/usecase_02/server.py"]
 				},
 			    "15-mcp-apps": {
@@ -448,3 +451,113 @@
 			* Best for Coding, mathematics, multilingual tasks & Speed: Qwen 2.5 (14B or 32B) ```qwen2.5:32b or qwen2.5:14b ```
 			* Best for Advanced Reasoning (complex problem-solving, math, and deep logical thinking) : DeepSeek-R1 (14B or 32B) ``` deepseek-r1:32b ```
 			* Best "Lightweight & Fast" All-Rounder ( daily text generation, summarizing, and light coding) : Mistral (7B) or Gemma 2 (9B) ``` mistral or gemma2:9b ```
+
+* [CartesiaAI](https://www.cartesia.ai/)
+	* Cartesia AI is an AI research lab and voice platform that builds ultra-fast, human-like voice generation and conversational AI models.
+	* Core Technology & Architecture
+		* State Space Models (SSMs): Instead of traditional Transformer architectures, Cartesia builds its models using State Space Models, Mamba, and H-Nets.
+	 	* This allows continuous, real-time processing with low latency, lower costs, and long-context capabilities.
+	* Key Products & Features
+		* Sonic (Text-to-Speech): A real-time voice synthesis engine that delivers hyper-realistic, emotionally expressive speech with sub-90-millisecond latency.
+  			* Costs roughly 1 credit per character generated. 
+		* Ink (Speech-to-Text): A real-time transcription model built for live dialogue, handling background noise, accents, and telephony artifacts.
+  			* Billed by audio duration depending on the endpoint. For example, ink-2 real-time streaming via WebSockets consumes 3 credits per second (including silence). 
+		* Line (Managed Agents Platform): A voice agent development platform that combines Ink, LLMs and Sonic to manage turn-taking, tools, and telephony for automated conversations.
+		* Voice Cloning: Allows users to clone voices from short audio clips (around 10 seconds) across dozens of languages and accents.
+	* Industries: Widely used in customer support, healthcare (patient scheduling and intake), finance, and government sectors.
+	* Code - pass text input and stream the raw audio bytes directly from the Sonic model:
+		```
+		pip install cartesia
+		
+		import os
+		from dotenv import load_dotenv
+		from cartesia import Cartesia
+		load_dotenv()
+		
+		client = Cartesia(api_key=os.environ.get("CARTESIA_API_KEY"))
+		
+		# Define parameters (Voice IDs can be found in the Cartesia playground)
+		voice_id = "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4"
+		model_id = "sonic-3.5"
+		
+		# Request streaming audio bytes
+		response = client.tts.generate(
+		    model_id=model_id,
+		    transcript="Hello! This is a real-time speech sample generated by Cartesia AI.",
+		    voice=voice_id,
+		    output_format={
+		        "container": "raw",
+		        "encoding": "pcm_f32le",
+		        "sample_rate": 44100
+		    }
+		)
+		
+		response.write_to_file("cartesia-sonic-3.6_test.wav")
+		
+		# Process or play back the audio stream chunks
+		for chunk in response:
+		    # chunk contains raw audio bytes ready for a playback device or websocket client
+		    pass
+
+		```
+* [AssemblyAI](https://www.assemblyai.com/)
+	* It's a leading Speech AI infrastructure platform that provides production-ready AI models to transcribe, understand, and build applications around voice and spoken data.
+	* Instead of building complex ML models from scratch, developers connect to AssemblyAI via a simple API to process massive amounts of audio and video.
+	* 🛠️ Core Capabilities
+		1. Speech-to-Text (STT) - Pre-recorded Audio (Transcribes files in 99+ languages), Real-time Streaming, Context-Aware Prompting
+		2. Audio Intelligence - Sentiment Analysis, PII Redaction, Smmarization & Chapters, Content Moderation
+		3. AI Voice Agent Infrastructure - Turn Detection (Knowing exactly when a user stops speaking), Interruption Handling (Instantly silencing the AI if a human cuts in), Tool Calling
+	* Code
+		```
+		import assemblyai as aai
+		from assemblyai.prerecorded.v2 import Transcriber, TranscriptionConfig
+		
+		config = TranscriptionConfig(
+		    speech_models=["universal-3-5-pro"],
+		    language_detection=True,
+		    speaker_labels=True,
+		)
+		
+		audio_file = "https://assembly.ai/wildfires.mp3"
+		transcriber = Transcriber(api_key="sdfsfsd")
+		transcript = transcriber.transcribe(audio_file, config=config)
+		
+		print(transcript.text)
+		for utterance in transcript.utterances:
+		    print(f"Speaker {utterance.speaker}: {utterance.text}")
+		```
+
+* LlamaIndex to power RAG
+	* It's an open-source data and agent framework that connects LLMs to private, domain-specific, or external data sources.
+	* What LlamaIndex is Used For
+		* Context Augmentation & RAG: LLMs are trained on public data and do not know your private company files, databases, or recent documents. LlamaIndex supplies this missing context at query time through Retrieval-Augmented Generation (RAG).
+		* Data Ingestion & Connectors: It pulls data from over 100+ sources and formats (such as PDFs, SQL databases, Notion, Slack, and APIs) using LlamaHub.
+		* Document Parsing & Extraction: Through tools like LlamaParse, it converts complex unstructured files (like PDFs with tables, charts, or images) into clean formats like Markdown or JSON for AI use.
+		* Indexing & Search: It breaks documents into chunks and converts them into vector embeddings or structured indices (like vector stores, list indexes, or knowledge graphs) for fast semantic search.
+		* AI Agents & Workflows: It allows developers to build autonomous multi-step agents that can reason, pick tools, query data, and execute tasks.
+	* Code
+		```
+		from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+		
+		from llama_index.llms.ollama import Ollama
+		ollama_llm = Ollama(model="llama3.2:latest")
+		
+		from llama_index.embeddings.ollama import OllamaEmbedding
+		embed_model = OllamaEmbedding(model_name='nomic-embed-text:latest')
+		
+		Settings.llm = ollama_llm
+		Settings.embed_model = embed_model
+		
+		# 1. Load all documents from a local folder
+		documents = SimpleDirectoryReader("C:\\doc\\sequencediagrams").load_data()
+		
+		# 2. Automatically chunk, embed, and index the text
+		index = VectorStoreIndex.from_documents(documents)
+		
+		# 3. Create a query engine and ask a question
+		query_engine = index.as_query_engine()
+		response = query_engine.query("summary ca drop")
+		print(response)
+		```
+
+* Livekit for orchestration
