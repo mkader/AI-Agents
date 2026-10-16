@@ -45,7 +45,7 @@
         goal="Research about the user's query and generate insights",
         backstory="You are a helpful assistant that can answer questions about the document.",
         verbose=True,
-        tools=[search_tool],
+        tools=[search_tool], # tools=[mcp_tools["currency_converter"]] call mcp tool
         llm=llm
     )
   
@@ -92,5 +92,5 @@
       amount: float = Field(..., description="The amount of currency to convert")
     ```
   * where is it used?
-    • FastAPI: For validating web API requests and automated documentation.
-    • AI & LLM Orchestration: Powering structured outputs in frameworks like LangChain and Pydantic AI to force AI models to respond in exact schema formats.
+  	* FastAPI: For validating web API requests and automated documentation.
+    * AI & LLM Orchestration: Powering structured outputs in frameworks like LangChain and Pydantic AI to force AI models to respond in exact schema formats.
