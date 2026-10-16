@@ -1,5 +1,5 @@
-* [crewai](https://crewai.com/)
-  * CrewAI is an open-source Python framework and enterprise platform that lets you build and coordinate teams of autonomous AI agents
+* [CrewAI](https://crewai.com/)
+  * It's an open-source Python framework and enterprise platform that lets you build and coordinate teams of autonomous AI agents
 
   * [Tools](https://docs.crewai.com/v1.15.28/en/concepts/tools) 12 Powerful crewAI Tools to build AI Agents
     * FileReadTool - Read and extract data from files ``` from crewai_tools import FileReadTool ``` 
@@ -9,20 +9,18 @@
     * DirectoryReadTool - List the contents of a directory
     * FirecrawlSearchTool - Search and convert websites to markdown
     * BrowserbaseLoadTool - Run, manage and monitor headless browers
-    * PDFSearchTool - RAG tool for searching in PDFs
-    * TXTSearchTool - RAG tool for searching in text files
-    * GithubSearchTool - RAG tool for searching in Githubs repos
+    * PDFSearchTool, TXTSearchTool, GithubSearchTool - RAG tool for searching in PDFs, text files, Githubs repos
 
   * Core Differences
-    • Primary Purpose:
-	    • LangChain / LangGraph: Built as a low-level, modular orchestration and retrieval toolkit. It acts as a graph-based state machine where you explicitly program nodes, edges, state schemas, and custom loops.
-	    • CrewAI: Built as a high-level, declarative multi-role agent framework. It treats agents like an organizational team with explicit roles, goals, backstories, and automated task delegation.
-    • Best Use Cases:
-	    • LangChain: Best for Retrieval-Augmented Generation (RAG), custom chatbots, document processing, and complex nonlinear deterministic logic (often using its upgrade layer, LangGraph).
-	    • CrewAI: Best for collaborative, multi-phase content pipelines, research workflows, and business automation where agents hand off work like a human team.
-    • Ecosystem and Scale:
-    	• LangChain: Features a massive ecosystem (600+ integrations, LangSmith for monitoring, LangServe for deployment) and a much larger developer community.
-    	• CrewAI: Features a more focused, fast-growing community with native memory structures and built-in tool interoperability.
+  	* Primary Purpose:
+		* LangChain / LangGraph: Built as a low-level, modular orchestration and retrieval toolkit. It acts as a graph-based state machine where you explicitly program nodes, edges, state schemas, and custom loops.
+	    * CrewAI: Built as a high-level, declarative multi-role agent framework. It treats agents like an organizational team with explicit roles, goals, backstories, and automated task delegation.
+	* Best Use Cases:
+		* LangChain: Best for Retrieval-Augmented Generation (RAG), custom chatbots, document processing, and complex nonlinear deterministic logic (often using its upgrade layer, LangGraph).
+	    * CrewAI: Best for collaborative, multi-phase content pipelines, research workflows, and business automation where agents hand off work like a human team.
+    * Ecosystem and Scale:
+    	* LangChain: Features a massive ecosystem (600+ integrations, LangSmith for monitoring, LangServe for deployment) and a much larger developer community.
+    	* CrewAI: Features a more focused, fast-growing community with native memory structures and built-in tool interoperability.
   * code
     ```
     from crewai import Agent, Task, Crew, LLM
