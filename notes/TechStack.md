@@ -1,3 +1,5 @@
+* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/)
+
 * [CrewAI](https://crewai.com/)
   * It's an open-source Python framework and enterprise platform that lets you build and coordinate teams of autonomous AI agents
   * CrewAI for Agent orchestration
@@ -68,7 +70,7 @@
 			* /map	Rapidly discovers and enumerates the entire link structure/sitemap of a website.
 			* /parse	Converts local static documents—like web-hosted PDFs, DOCX, or Excel sheets—into clean text or LaTeX syntax.
 		* 💡 Why Developers Use It for AI - Token Efficiency, Handles "The Hard Stuff" Automatically (bypasses rate limit, captchas, bot), Built for Agents (natively supports MCP)
-		* 🛠️ Quick Code Example (Python)
+		* Code
 			```
 			from firecrawl import Firecrawl
 			app = Firecrawl(api_key="fc-YOUR_API_KEY")
@@ -149,7 +151,7 @@
   os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME_LLM")
   ```
 
-* Pydantic - Data validation and parsing library for Python.
+* [Pydantic](https://pydantic.dev/) - Data validation and parsing library for Python.
   * use Pydantic, define a data structure by creating a class that inherits from BaseModel and declaring fields with standard type hints.
     ```
     from pydantic import BaseModel, EmailStr, Field
