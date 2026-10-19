@@ -560,4 +560,115 @@
 		print(response)
 		```
 
-* Livekit for orchestration
+* [Livekit](https://livekit.com/) for orchestration
+	* It's an open-source real-time communication platform designed to make it easy for developers to build live audio, video, and data streaming into their applications.
+	* Popularity recently as the go-to infrastructure for real-time AI voice and multimodal agents (like ChatGPT’s Advanced Voice Mode).
+	* It provides a specialized framework (in Python and Node) to connect LLMs, Speech-to-Text (STT), and Text-to-Speech (TTS) models directly into a WebRTC room.
+	* Key Use Cases
+		* Voice & Multimodal AI Agents: Building realistic AI customer service bots, language tutors, or interactive voice assistants that talk, listen, and interrupt just like humans.
+		* Video Conferencing & Telehealth: Creating embedded video chat apps similar to Zoom or Google Meet.
+		* Live Streaming & Interactive Broadcasting: Real-time streaming for gaming, auctions, or town halls where latency needs to be instant.
+		* Robotics & Teleoperation: Streaming video from drones or robots to a browser control interface with negligible delay.
+	 * Code
+		<img width="350" height="75" alt="image" src="https://github.com/user-attachments/assets/487eafff-eb7c-433c-9a17-e514025a5a0e" />
+	
+		```
+		LIVEKIT_API_KEY=asdasda
+		LIVEKIT_API_SECRET=asdasdas
+		
+		from dotenv import load_dotenv
+		
+		from livekit import agents
+		from livekit.agents import AgentServer, AgentSession, Agent, inference, room_io, TurnHandlingOptions
+		from livekit.plugins import ai_coustics
+		
+		load_dotenv()
+		
+		class Assistant(Agent):
+		    def __init__(self) -> None:
+		        super().__init__(
+		            instructions="""You are a helpful voice AI assistant.
+		            You eagerly assist users with their questions by providing information from your extensive knowledge.
+		            Your responses are concise, to the point, and without any complex formatting or punctuation including emojis, asterisks, or other symbols.
+		            You are curious, friendly, and have a sense of humor.""",
+		        )
+		
+		server = AgentServer()
+		
+		@server.rtc_session(agent_name="my-agent")
+		async def my_agent(ctx: agents.JobContext):
+		    session = AgentSession(
+		        stt=inference.STT(model="assemblyai/universal-3-6-pro", language="en"),
+		        llm=inference.LLM(model="google/gemma-4-31b-it"),
+		        tts=inference.TTS(
+		            model="fishaudio/s2.1-pro",
+		            voice="fa4c9eb3dccc4806b382b40d61c6b10a",
+		        ),
+		        turn_handling=TurnHandlingOptions(
+		            turn_detection=inference.TurnDetector(),
+		        ),
+		    )
+		
+		    await session.start(
+		        room=ctx.room,
+		        agent=Assistant(),
+		        room_options=room_io.RoomOptions(
+		            audio_input=room_io.AudioInputOptions(
+		                noise_cancellation=ai_coustics.audio_enhancement(model=ai_coustics.EnhancerModel.QUAIL_VF_S),
+		            ),
+		        ),
+		    )
+		
+		    await session.generate_reply(
+		        instructions="Greet the user and offer your assistance."
+		    )
+		
+		if __name__ == "__main__":
+		    agents.cli.run_app(server)
+		```
+	 
+		<img width="350" height="75" alt="image" src="https://github.com/user-attachments/assets/15165c1b-a379-4051-90b2-c8150e4b7492" />
+		
+		```
+		real time
+		
+		from dotenv import load_dotenv
+		
+		from livekit import agents
+		from livekit.agents import AgentServer, AgentSession, Agent, inference, room_io
+		from livekit.plugins import ai_coustics
+		
+		load_dotenv()
+		
+		class Assistant(Agent):
+		    def __init__(self) -> None:
+		        super().__init__(instructions="You are a helpful voice AI assistant.")
+		
+		server = AgentServer()
+		
+		@server.rtc_session(agent_name="my-agent")
+		async def my_agent(ctx: agents.JobContext):
+		    session = AgentSession(
+		        llm=inference.RealtimeModel(
+		            model="openai/gpt-realtime-2.1",
+		            voice="marin",
+		        )
+		    )
+		
+		    await session.start(
+		        room=ctx.room,
+		        agent=Assistant(),
+		        room_options=room_io.RoomOptions(
+		            audio_input=room_io.AudioInputOptions(
+		                noise_cancellation=ai_coustics.audio_enhancement(model=ai_coustics.EnhancerModel.QUAIL_VF_S),
+		            ),
+		        ),
+		    )
+		
+		    await session.generate_reply(
+		        instructions="Greet the user and offer your assistance. You should start by speaking in English."
+		    )
+			
+		if __name__ == "__main__":
+		    agents.cli.run_app(server)
+		```
