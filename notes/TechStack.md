@@ -1,5 +1,43 @@
-* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/), [Browserbase](https://www.browserbase.com/)
+* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/), [Browserbase](https://www.browserbase.com/), [Streamlit](https://streamlit.io/), [BrightData](https://brightdata.com/), [Zep](https://www.getzep.com/),  [MS Agent Framework (MAF)](https://github.com/microsoft/agent-framework), [Motia or III](https://iii.dev/)
 
+* [Motia or III](https://iii.dev/) is an open-source, event-driven backend framework designed to replace fragmented backend stacks (like Express, BullMQ, Temporal, node-cron, and LangChain) with a single, cohesive system
+  
+* [MS Agent Framework (MAF)](https://github.com/microsoft/agent-framework) is an open, multi-language framework for building production-grade AI agents and multi-agent workflows.
+	* Microsoft Agent Framework is built for teams taking agents from prototype to production. It provides a consistent foundation for building, orchestrating, and operating agent systems
+  	* [Migrated]MS AutoGen for agent orchestration - AutoGen is a framework for creating multi-agent AI applications that can act autonomously or work alongside humans.
+	
+* [Zep](https://www.getzep.com/) is a specialized long-term memory and context layer for AI agents that replaces or enhances basic chat history and static RAG.
+	* Graphiti: temporally-aware knowledge graph engine that extracts entities, relationships, and facts from conversations, JSON data, and documents.
+	* Konig: graph database service that powers millions of temporal Context Graphs with provenance tracking and sub-200ms retrieval.
+
+* [BrightData](https://brightdata.com/)
+	* Web data infrastructure for humans and AI agents to search, crawl, extract the public web site without getting blocked, rate-limited, or anti-bot systems.
+
+* [Streamlit](https://streamlit.io/)
+	* It's an open-source Python framework that lets you turn data scripts into interactive web applications using pure Python code, with no HTML, CSS, or JavaScript required
+	* What is Streamlit for? - Data Visualization & Dashboards (Display charts, maps), ML Prototyping (demo ML models or AI workflows without building a traditional web stack)
+	```
+	pip install streamlit
+	
+	run 1
+	streamlit hello
+	
+	import streamlit as st
+	import numpy as np
+	
+	st.title("My Quick Data Dashboard")
+	
+	# Interactive slider widget
+	num_points = st.slider("Select number of data points:", 10, 100, 50)
+	
+	# Generate and display data
+	data = np.random.randn(num_points)
+	st.line_chart(data)
+	
+	run 2
+	streamlit run app.py
+	```
+ 
 * [CrewAI](https://crewai.com/)
   * It's an open-source Python framework and enterprise platform that lets you build and coordinate teams of autonomous AI agents
   * CrewAI for Agent orchestration
