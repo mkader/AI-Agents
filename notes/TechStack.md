@@ -1,4 +1,4 @@
-* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/)
+* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/), [Browserbase](https://www.browserbase.com/)
 
 * [CrewAI](https://crewai.com/)
   * It's an open-source Python framework and enterprise platform that lets you build and coordinate teams of autonomous AI agents
@@ -80,7 +80,9 @@
 			
 			print(result.markdown)
 			```
-    * BrowserbaseLoadTool - Run, manage and monitor headless browers
+    * BrowserbaseLoadTool - Run, manage and monitor headless browers. [Browserbase](https://www.browserbase.com/)
+	    * It's a developer platform that provides cloud-based headless browser infrastructure, built specifically for AI agents, web automations, and scraping at scale
+	    * What It Is For - AI Web Automation (AI agents browse, click, type, and navigate those human-only sites), Bypassing Anti-Bot Systems (CAPTCHA), Scaling Headless Browsers (Instead of Playwright, Puppeteer, or Selenium)
     * PDFSearchTool, TXTSearchTool, GithubSearchTool - RAG tool for searching in PDFs, text files, Githubs repos
 
 | | SerperDevTool |	FirecrawlSearchTool |
