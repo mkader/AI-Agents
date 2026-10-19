@@ -527,7 +527,7 @@
 		    print(f"Speaker {utterance.speaker}: {utterance.text}")
 		```
 
-* LlamaIndex to power RAG
+* [LlamaIndex](https://www.llamaindex.ai/) to power RAG
 	* It's an open-source data and agent framework that connects LLMs to private, domain-specific, or external data sources.
 	* What LlamaIndex is Used For
 		* Context Augmentation & RAG: LLMs are trained on public data and do not know your private company files, databases, or recent documents. LlamaIndex supplies this missing context at query time through Retrieval-Augmented Generation (RAG).
@@ -570,7 +570,7 @@
 		* Live Streaming & Interactive Broadcasting: Real-time streaming for gaming, auctions, or town halls where latency needs to be instant.
 		* Robotics & Teleoperation: Streaming video from drones or robots to a browser control interface with negligible delay.
 	 * Code
-		<img width="350" height="75" alt="image" src="https://github.com/user-attachments/assets/487eafff-eb7c-433c-9a17-e514025a5a0e" />
+		<img alt="image" src="https://github.com/user-attachments/assets/487eafff-eb7c-433c-9a17-e514025a5a0e" />
 	
 		```
 		LIVEKIT_API_KEY=asdasda
@@ -627,7 +627,7 @@
 		    agents.cli.run_app(server)
 		```
 	 
-		<img width="350" height="75" alt="image" src="https://github.com/user-attachments/assets/15165c1b-a379-4051-90b2-c8150e4b7492" />
+		<img alt="image" src="https://github.com/user-attachments/assets/15165c1b-a379-4051-90b2-c8150e4b7492" />
 		
 		```
 		real time
