@@ -8,17 +8,17 @@
 		* Connecting to Private Data (RAG): Models only know their training data. LangChain helps pull information from PDFs, SQL databases, or vector stores so the model can answer questions using your specific data.
 		* Enabling Tool Use & Agents: Models normally just output text. LangChain lets an AI act as a reasoning engine that chooses and runs external tools—like web searches, calculators, or custom APIs—to complete multi-step tasks.
 	* Agent = Model + Harness. LangChain provides create_agent: a minimal, highly configurable harness. The harness is everything around the model loop: the prompt, the tools, and any middleware that shapes behavior.
+ 	* Commands
+  	```
+    from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
+    from langchain_openai import AzureChatOpenAI, ChatOpenAI
+    from langchain_core.vectorstores import InMemoryVectorStore
+    from langgraph.graph import END, StateGraph
+    ``` 
 	* Code - create a simple LangChain agent with a custom tool:
 	```
-	# 1/8 pip install -qU langchain "langchain[openai]"
-	# 2 pip install -qU langchain "langchain[google-genai]"
-	# 3 pip install -qU langchain "langchain[anthropic]"
-	# 4 pip install -qU langchain langchain-openrouter  
-	# 5 pip install -qU langchain langchain-fireworks
-	# 6 pip install -qU langchain langchain-baseten 
-	# 7 pip install -qU langchain langchain-ollama
-	# 9 pip install -qU langchain langchain-aws
-	# 10 pip install -qU langchain "langchain[huggingface]"
+	# 1/8 pip install -qU langchain "langchain[openai]" #2 "langchain[google-genai]"  #3 "langchain[anthropic]" #4 langchain-openrouter #5 langchain-fireworks #6 langchain-baseten
+ 	#7 langchain-ollama #9 langchain-aws #10  "langchain[huggingface]"
 	
 	import os  
 	from dotenv import load_dotenv
@@ -42,16 +42,9 @@
 	)
 	
 	agent = create_agent(
-	    #model="openai:gpt-5.5", #1
-	    #model="google_genai:gemini-3.5-flash-lite", #2 working, got key
-	    #model="claude-sonnet-4-6", #3
-	    #model="openrouter:anthropic/claude-sonnet-4-6", #4
-	    #model="fireworks:accounts/fireworks/models/qwen3p5-397b-a17b",#5
-	    #model="baseten:zai-org/GLM-5.2", #6 working, got key
-	    #model="ollama:llama3.2:latest", #7 working, local
-	    #model=model, #8 working, got key
-	    #model="bedrock_converse:us.anthropic.claude-sonnet-4-6", #9
-	    model="huggingface:microsoft/Phi-3-mini-4k-instruct", #10 working, downloaded, got key
+	    #model="openai:gpt-5.5" | #1 "google_genai:gemini-3.5-flash-lite", #2 working, got key | "claude-sonnet-4-6", #3 | "openrouter:anthropic/claude-sonnet-4-6", #4
+	    "fireworks:accounts/fireworks/models/qwen3p5-397b-a17b",#5 | "baseten:zai-org/GLM-5.2", #6 working, got key | "ollama:llama3.2:latest", #7 working, local
+ 		model, #8 working, got key  | "bedrock_converse:us.anthropic.claude-sonnet-4-6", #9 | "huggingface:microsoft/Phi-3-mini-4k-instruct", #10 working, downloaded, got key
 	    tools=[get_weather],
 	    system_prompt="You are a helpful assistant",
 	)
