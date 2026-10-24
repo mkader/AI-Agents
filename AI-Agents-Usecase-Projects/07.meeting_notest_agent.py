@@ -5,8 +5,16 @@ Converts meeting transcript text into structured meeting notes:
 summary, action items, decisions, and follow-ups.
 
 Usage:
-    python agent.py --transcript meeting.txt
-    python agent.py --text "John: Let's ship v2 next Friday..."
+    python agent.py
+
+    # Your own transcript file
+    python agent.py --transcript meeting_transcript.txt
+
+    # Inline text
+    python agent.py --text "Alice: Let's ship by Friday. Bob: I need 2 more days for testing..."
+
+    # Custom output path
+    python agent.py --transcript meeting_transcript.txt --output sprint_notes.md
 """
 
 import argparse
