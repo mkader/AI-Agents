@@ -1,59 +1,60 @@
-* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/), [Browserbase](https://www.browserbase.com/), [Streamlit](https://streamlit.io/), [BrightData](https://brightdata.com/), [Zep](https://www.getzep.com/),  [MS Agent Framework (MAF)](https://github.com/microsoft/agent-framework), [Motia or III](https://iii.dev/), [langchain](https://www.langchain.com/)
+* [CrewAI](https://crewai.com/),  [serper](https://serper.dev/), [firecrawl](http://firecrawl.dev/), Load Env, [Pydantic](https://pydantic.dev/), [LightningAI's LitServe](https://lightning.ai/litserve), [FastMCP](https://gofastmcp.com/getting-started/welcome), [Ollama](https://ollama.com/), [CartesiaAI](https://www.cartesia.ai/), [AssemblyAI](https://www.assemblyai.com/), [LlamaIndex](https://www.llamaindex.ai/), [Livekit](https://livekit.com/), [Browserbase](https://www.browserbase.com/), [Streamlit](https://streamlit.io/), [BrightData](https://brightdata.com/), [Zep](https://www.getzep.com/),  [MS Agent Framework (MAF)](https://github.com/microsoft/agent-framework), [Motia or III](https://iii.dev/), [[langchain](https://www.langchain.com/)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain)
 
-* [langchain](https://www.langchain.com/)
-	* It's an open-source framework that connects LLMs to external data sources, memory, and software tools.
-	* Instead of writing custom code to plug models into databases or APIs, developers use LangChain as the "plumbing" to build context-aware AI applications.
-	* What LangChain Is For?, LangChain solves three major limitations of raw LLM APIs:
-		* Giving Models Memory: Raw LLM calls forget past messages. LangChain provides built-in memory modules to track and pass conversation history.
-		* Connecting to Private Data (RAG): Models only know their training data. LangChain helps pull information from PDFs, SQL databases, or vector stores so the model can answer questions using your specific data.
-		* Enabling Tool Use & Agents: Models normally just output text. LangChain lets an AI act as a reasoning engine that chooses and runs external tools—like web searches, calculators, or custom APIs—to complete multi-step tasks.
-	* Agent = Model + Harness. LangChain provides create_agent: a minimal, highly configurable harness. The harness is everything around the model loop: the prompt, the tools, and any middleware that shapes behavior.
- 	* Commands
-  	```
-    from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
-    from langchain_openai import AzureChatOpenAI, ChatOpenAI
-    from langchain_core.vectorstores import InMemoryVectorStore
-    from langgraph.graph import END, StateGraph
-    ``` 
-	* Code - create a simple LangChain agent with a custom tool:
-	```
-	# 1/8 pip install -qU langchain "langchain[openai]" #2 "langchain[google-genai]"  #3 "langchain[anthropic]" #4 langchain-openrouter #5 langchain-fireworks #6 langchain-baseten
- 	#7 langchain-ollama #9 langchain-aws #10  "langchain[huggingface]"
-	
-	import os  
-	from dotenv import load_dotenv
-	from langchain.agents import create_agent
-	#8 azure_openai:gpt-5.5
-	from langchain.chat_models import init_chat_model
-	
-	load_dotenv()
-	
-	def get_weather(city: str) -> str:
-	    """Get weather for a given city."""
-	    return f"It's always sunny in {city}!"
-	
-	#8 azure_openai:gpt-5.5
-	model = init_chat_model(
-	    "azure_openai:gpt-4.1",
-	    azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
-	    api_key=os.environ["AZURE_OPENAI_API_KEY"],
-	    api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-	    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT_LLM"],
-	)
-	
-	agent = create_agent(
-	    #model="openai:gpt-5.5" | #1 "google_genai:gemini-3.5-flash-lite", #2 working, got key | "claude-sonnet-4-6", #3 | "openrouter:anthropic/claude-sonnet-4-6", #4
-	    "fireworks:accounts/fireworks/models/qwen3p5-397b-a17b",#5 | "baseten:zai-org/GLM-5.2", #6 working, got key | "ollama:llama3.2:latest", #7 working, local
- 		model, #8 working, got key  | "bedrock_converse:us.anthropic.claude-sonnet-4-6", #9 | "huggingface:microsoft/Phi-3-mini-4k-instruct", #10 working, downloaded, got key
-	    tools=[get_weather],
-	    system_prompt="You are a helpful assistant",
-	)
-	
-	result = agent.invoke(
-	    {"messages": [{"role": "user", "content": "What's the weather in San Francisco?"}]}
-	)
-	print(result["messages"][-1].content_blocks)
-	```
+#### [langchain](https://www.langchain.com/)
+* It's an open-source framework that connects LLMs to external data sources, memory, and software tools.
+* Instead of writing custom code to plug models into databases or APIs, developers use LangChain as the "plumbing" to build context-aware AI applications.
+* What LangChain Is For?, LangChain solves three major limitations of raw LLM APIs:
+	* Giving Models Memory: Raw LLM calls forget past messages. LangChain provides built-in memory modules to track and pass conversation history.
+	* Connecting to Private Data (RAG): Models only know their training data. LangChain helps pull information from PDFs, SQL databases, or vector stores so the model can answer questions using your specific data.
+	* Enabling Tool Use & Agents: Models normally just output text. LangChain lets an AI act as a reasoning engine that chooses and runs external tools—like web searches, calculators, or custom APIs—to complete multi-step tasks.
+* Agent = Model + Harness. LangChain provides create_agent: a minimal, highly configurable harness. The harness is everything around the model loop: the prompt, the tools, and any middleware that shapes behavior.
+* DeprecationWarning: `langchain-community` is being sunset and is no longer actively maintained 
+* Commands
+```
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
+from langchain_core.vectorstores import InMemoryVectorStore
+from langgraph.graph import END, StateGraph
+``` 
+* Code - create a simple LangChain agent with a custom tool:
+```
+# 1/8 pip install -qU langchain "langchain[openai]" #2 "langchain[google-genai]"  #3 "langchain[anthropic]" #4 langchain-openrouter #5 langchain-fireworks #6 langchain-baseten
+#7 langchain-ollama #9 langchain-aws #10  "langchain[huggingface]"
+
+import os  
+from dotenv import load_dotenv
+from langchain.agents import create_agent
+#8 azure_openai:gpt-5.5
+from langchain.chat_models import init_chat_model
+
+load_dotenv()
+
+def get_weather(city: str) -> str:
+	"""Get weather for a given city."""
+	return f"It's always sunny in {city}!"
+
+#8 azure_openai:gpt-5.5
+model = init_chat_model(
+	"azure_openai:gpt-4.1",
+	azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+	api_key=os.environ["AZURE_OPENAI_API_KEY"],
+	api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+	azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT_LLM"],
+)
+
+agent = create_agent(
+	#model="openai:gpt-5.5" | #1 "google_genai:gemini-3.5-flash-lite", #2 working, got key | "claude-sonnet-4-6", #3 | "openrouter:anthropic/claude-sonnet-4-6", #4
+	"fireworks:accounts/fireworks/models/qwen3p5-397b-a17b",#5 | "baseten:zai-org/GLM-5.2", #6 working, got key | "ollama:llama3.2:latest", #7 working, local
+	model, #8 working, got key  | "bedrock_converse:us.anthropic.claude-sonnet-4-6", #9 | "huggingface:microsoft/Phi-3-mini-4k-instruct", #10 working, downloaded, got key
+	tools=[get_weather],
+	system_prompt="You are a helpful assistant",
+)
+
+result = agent.invoke(
+	{"messages": [{"role": "user", "content": "What's the weather in San Francisco?"}]}
+)
+print(result["messages"][-1].content_blocks)
+```
  
 * [Motia or III](https://iii.dev/) is an open-source, event-driven backend framework designed to replace fragmented backend stacks (like Express, BullMQ, Temporal, node-cron, and LangChain) with a single, cohesive system
   
