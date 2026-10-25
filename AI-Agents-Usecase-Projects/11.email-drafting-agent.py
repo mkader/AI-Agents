@@ -11,6 +11,7 @@ A two-agent crew that drafts professional emails:
 Usage:
     python email_agent.py
     python email_agent.py --context "Follow up on the Q3 proposal sent last week" --tone "professional"
+    python agent.py --context "Apologize for the delayed delivery of the software project" --tone "apologetic but confident" --recipient "the client project manager"
 """
 
 import argparse
