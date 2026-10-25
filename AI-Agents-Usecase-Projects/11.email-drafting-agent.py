@@ -1,4 +1,7 @@
 """
+3 different approches
+"""
+"""
 Email Drafting Agent using CrewAI.
 
 A two-agent crew that drafts professional emails:
@@ -160,7 +163,7 @@ def draft_email(context: str, tone: str, recipient: str) -> str:
 if __name__ == "__main__":
     run_cli(draft_email, "Email Drafting with a LangChain Agent")
 
-####################################################################
+################################################################
 """
 use a LangChain agent instead of CrewAI and keep your existing Azure OpenAI deployment.
 
