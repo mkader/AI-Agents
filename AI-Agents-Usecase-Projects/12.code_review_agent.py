@@ -8,6 +8,8 @@ Usage:
     python agent.py --file path/to/code.py
     python agent.py --code "def add(a,b): return a+b"
     python code.py --code "def divide(a, b): return a / b"
+    # Review non-Python code
+    python agent.py --file app.js --language javascript
 """
 
 import argparse
