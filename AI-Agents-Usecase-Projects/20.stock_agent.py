@@ -110,6 +110,5 @@ def main():
     analysis = analyze_stock(data)
     print(analysis)
 
-d
 if __name__ == "__main__":
     main()
