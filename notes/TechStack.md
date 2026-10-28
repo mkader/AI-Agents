@@ -1,4 +1,21 @@
-[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily)
+[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph)
+
+#### [LangGraph](https://www.langchain.com/langgraph)
+* It's a framework for building AI applications as graphs—a set of steps connected by paths.
+* It’s useful when an AI workflow needs more than a simple prompt-and-response chain, such as branching, looping, remembering state, or pausing for human input.
+* A graph has 3 main parts:
+	* State: The shared data passed through the workflow, such as the conversation history or tool results.
+	* Nodes: Steps that read the state and update it. A node might call an LLM, search documents, or run a tool.
+	* Edges: Rules for what runs next. An edge can lead to a fixed next step or choose a route based on the current state.
+* For example, a support assistant might:
+	* Receive a question.
+	* Decide whether it needs a knowledge-base search.
+	* Search if needed.
+	* Draft an answer.
+	* Ask a person to approve it for sensitive cases.
+* Unlike a simple linear chain, a graph can loop back—for example, to revise an answer if it doesn’t meet a quality check.
+* LangGraph also supports saving workflow state so an application can resume later, which is useful for long-running tasks and conversations.
+* In short: LangGraph helps you control the steps and state of an AI workflow, especially when it needs decisions, tools, memory, or human review.
 
 #### [tavily](https://www.tavily.com/)
 * Connect your AI agents to the web. One secure API for real-time web access.
@@ -141,17 +158,7 @@ streamlit run app.py
 | Provider	| Serper, which returns Google search results	| Firecrawl
 | Typical result	| Search-result titles, links, and snippets	| Search results and, depending on its implementation, extracted page content
 | Useful | when	You want a straightforward Google-style web search	| You want web search as part of a Firecrawl-based extraction or RAG workflow
-	
-* Core Differences
-	* Primary Purpose:
-		* LangChain / LangGraph: Built as a low-level, modular orchestration and retrieval toolkit. It acts as a graph-based state machine where you explicitly program nodes, edges, state schemas, and custom loops.
-		* CrewAI: Built as a high-level, declarative multi-role agent framework. It treats agents like an organizational team with explicit roles, goals, backstories, and automated task delegation.
-	* Best Use Cases:
-		* LangChain: Best for Retrieval-Augmented Generation (RAG), custom chatbots, document processing, and complex nonlinear deterministic logic (often using its upgrade layer, LangGraph).
-		* CrewAI: Best for collaborative, multi-phase content pipelines, research workflows, and business automation where agents hand off work like a human team.
-	* Ecosystem and Scale:
-		* LangChain: Features a massive ecosystem (600+ integrations, LangSmith for monitoring, LangServe for deployment) and a much larger developer community.
-		* CrewAI: Features a more focused, fast-growing community with native memory structures and built-in tool interoperability.
+
 * code
 ```
 from crewai import Agent, Task, Crew, LLM
@@ -195,6 +202,17 @@ crew = Crew(
 
 return crew.kickoff(inputs={"topic": topic})
 ```
+	
+#### CrewAI & LangChain / LangGraph - Core Differences
+* Primary Purpose:
+	* LangChain / LangGraph: Built as a low-level, modular orchestration and retrieval toolkit. It acts as a graph-based state machine where you explicitly program nodes, edges, state schemas, and custom loops.
+	* CrewAI: Built as a high-level, declarative multi-role agent framework. It treats agents like an organizational team with explicit roles, goals, backstories, and automated task delegation.
+* Best Use Cases:
+	* LangChain: Best for Retrieval-Augmented Generation (RAG), custom chatbots, document processing, and complex nonlinear deterministic logic (often using its upgrade layer, LangGraph).
+	* CrewAI: Best for collaborative, multi-phase content pipelines, research workflows, and business automation where agents hand off work like a human team.
+* Ecosystem and Scale:
+	* LangChain: Features a massive ecosystem (600+ integrations, LangSmith for monitoring, LangServe for deployment) and a much larger developer community.
+	* CrewAI: Features a more focused, fast-growing community with native memory structures and built-in tool interoperability.
 
 #### [firecrawl](http://firecrawl.dev/)
 * CrewAI FirecrawlSearchTool - Search and convert websites to markdown, 
