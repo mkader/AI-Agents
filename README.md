@@ -4,9 +4,9 @@
 * [langchain](https://github.com/langchain-ai/langgraph/tree/23961cff61a42b52525f3b20b4094d8d2fba1744/docs/docs/tutorials)
   | Use Case | Industry | Description |
   |---|---|---|
-  | 🤖 Chatbot Simulation Evaluation | AI / QA | Simulate user interactions to evaluate chatbot performance |
-  | 🧠 Information Gathering via Prompting | Research | LangGraph workflow using prompting to gather information |
-  | 🧠 Code Assistant with LangGraph | Software Development | Resilient code assistant with error checking and iterative refinement |
+  | 🤖 Chatbot Simulation Evaluation (1.md) | AI / QA | Simulate user interactions to evaluate chatbot performance |
+  | 🧠 Information Gathering via Prompting (2.md) | Research | LangGraph workflow using prompting to gather information |
+  | 🧠 Code Assistant with LangGraph (3.md) | Software Development | Resilient code assistant with error checking and iterative refinement |
   | 🧑‍💼 Customer Support Agent | Customer Support | Graph-based agent for handling customer inquiries | 
   | 🔁 Extraction with Retries | Data Extraction | Retry mechanisms for robust data extraction |
   | 🧠 Multi-Agent Workflow (Supervisor) | Workflow Orchestration | Supervisor agent orchestrating multiple specialized agents | 
