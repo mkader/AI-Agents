@@ -832,7 +832,9 @@ In this section, we will define a simple Zero-shot agent as the assistant, give 
 The simple 2-node graph will look like the following:
 """
 ```
+
 <img width="1272" height="572" alt="image" src="https://github.com/user-attachments/assets/9c854898-885b-42d4-80b8-88aa5157f27b" />
+
 ```
 """
 State
