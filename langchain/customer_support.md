@@ -612,7 +612,7 @@ Important limitation
 """
 ```
 
-```mermiad
+```mermaid
 sequenceDiagram
     actor User
     participant Demo as Example loop
@@ -891,7 +891,7 @@ for question in tutorial_questions:
         snapshot = part_3_graph.get_state(config)
 ```
 <img width="1063" height="407" alt="image" src="https://github.com/user-attachments/assets/dc27b37e-e8b8-4146-9e2a-588243efa924" />
-
+<img width="935" height="295" alt="image" src="https://github.com/user-attachments/assets/27564d0e-7fee-461c-ad43-c842845fd0d8" />
 ```
 """
 Part 3 Review
@@ -905,9 +905,8 @@ In the next section, we show how you can take more control over different user e
  or sub-graphs based on the user's intent.
 """
 ```
-
-<img width="935" height="295" alt="image" src="https://github.com/user-attachments/assets/27564d0e-7fee-461c-ad43-c842845fd0d8" />
-
+* agent_4.py
+  
 <img width="1266" height="633" alt="image" src="https://github.com/user-attachments/assets/b5dda22c-d2db-4c62-8c14-f9e3cd3a5c0a" />
 
 <img width="1904" height="396" alt="image" src="https://github.com/user-attachments/assets/b2248cb4-5f66-47ad-a99b-ba7a48ab16dc" />
