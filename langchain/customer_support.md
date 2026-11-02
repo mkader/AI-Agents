@@ -6,6 +6,7 @@
 
 <img width="1276" height="640" alt="image" src="https://github.com/user-attachments/assets/e9abba00-e1a6-4b52-aece-029c2a5c5d6c" />
 
+* agent_tools.py
 ```
 """
 pip install -U langgraph langchain-community tavily-python pandas openai
@@ -16,11 +17,12 @@ from contextlib import closing
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from datetime import date, datetime
-from typing import Optional, Union, Annotated
+from typing import Optional, Union, Annotated, Callable, Literal
 from typing_extensions import TypedDict
 from langchain_openai import ChatOpenAI, AzureChatOpenAI
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.tools import tool
@@ -30,11 +32,13 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.graph import END, StateGraph, START
 from langgraph.graph.message import AnyMessage, add_messages
 
+# Populate the database
 """
 Populate the database
 Download missing or empty tutorial databases beside this script, then shift dates
 to the present. Set overwrite = True to replace both databases with a fresh download.
 """
+
 load_dotenv()
 
 db_url = "https://storage.googleapis.com/benchmarks-artifacts/travel-db/travel2.sqlite"
@@ -126,11 +130,15 @@ def update_dates(file):
 
 db = update_dates(local_file)
 
+# Tools
 """
 Tools
 Define our assistant's tools to search the airline's policy manual and search and manage reservations for flights, hotels, car rentals, and excursions. 
 We will reuse these tools throughout the tutorial. 
+"""
 
+# Lookup Company Policies
+"""
 Lookup Company Policies
 The assistant retrieve policy information to answer user questions. 
 Note that enforcement of these policies still must be done within the tools/APIs themselves, since the LLM can always ignore this.
@@ -187,6 +195,7 @@ def lookup_policy(query: str) -> str:
     docs = retriever.query(query, k=2)
     return "\n\n".join([doc["page_content"] for doc in docs])
 
+# Flights
 """
 Flights
 Define the (fetch_user_flight_information) tool to let the agent see the current user's flight information. 
@@ -382,6 +391,7 @@ def cancel_ticket(ticket_no: str, *, config: RunnableConfig) -> str:
     conn.close()
     return "Ticket successfully cancelled."
 
+# Car Rental Tools
 """
 Car Rental Tools
 Once a user books a flight, they likely will want to organize transportation. 
@@ -519,6 +529,7 @@ def cancel_car_rental(rental_id: int) -> str:
         conn.close()
         return f"No car rental found with ID {rental_id}."
 
+# Hotels
 """
 Hotels
 The user has to sleep! Define some tools to search for and manage hotel reservations.
@@ -653,7 +664,8 @@ def cancel_hotel(hotel_id: int) -> str:
     else:
         conn.close()
         return f"No hotel found with ID {hotel_id}."
-    
+
+# Excursions
 """
 Excursions
 Finally, define some tools to let the user search for things to do (and make reservations) once they arrive.
@@ -782,6 +794,7 @@ def cancel_excursion(recommendation_id: int) -> str:
         conn.close()
         return f"No trip recommendation found with ID {recommendation_id}."
 
+# Utilities
 """
 Utilities
 Define helper functions to pretty print the messages in the graph while we debug it and to give our tool node error handling 
@@ -820,34 +833,118 @@ def _print_event(event: dict, _printed: set, max_length=1500):
             print(msg_repr)
             _printed.add(message.id)
 
+# LLM
+# Haiku is faster and cheaper, but less accurate
+# llm = ChatAnthropic(model="claude-3-haiku-20240307")
+#llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
+# You could swap LLMs, though you will likely want to update the prompts when doing so!
+#llm = ChatOpenAI(model="gpt-4-turbo-preview")
+
+llm = AzureChatOpenAI(
+    azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT_LLM"],
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    api_version="2025-03-01-preview",
+    temperature=0,
+)
+
+tavilySearch = TavilySearch(max_results=1)
+```
+
+* agent_1.py
+```
+from agent_tools import *
+from agent_tools import _print_event
+
+# Part 1: Zero-shot Agent
 """
 Part 1: Zero-shot Agent
-When building, it's best to start with the simplest working implementation and use an evaluation tool like LangSmith to measure its efficacy. 
-All else equal, prefer simple, scalable solutions to complicated ones. 
-In this case, the single-graph approach has limitations. The bot may take undesired actions without user confirmation, 
-struggle with complex queries, and lack focus in its responses. We'll address these issues later.
-
-In this section, we will define a simple Zero-shot agent as the assistant, give the agent all of our tools,  and prompt it to use them judiciously to assist the user.
+start with the simplest working implementation and use an evaluation tool like LangSmith to measure its efficacy.
+In this case, the single-graph approach has limitations. The bot may take undesired actions without user confirmation, struggle with complex queries, and lack focus in its responses. 
+Define a simple Zero-shot agent as the assistant, give the agent all of our tools, and prompt it to use them judiciously to assist the user.
 
 The simple 2-node graph will look like the following:
 """
 ```
-
 <img width="1272" height="572" alt="image" src="https://github.com/user-attachments/assets/9c854898-885b-42d4-80b8-88aa5157f27b" />
 
 ```
 """
-State
-Define our StateGraph's state as a typed dictionary containing an append-only list of messages. 
-These messages form the chat history, which is all the state our simple assistant needs.
+Code Explanation
+Main loop is: user message → assistant → optional tool calls → assistant response.
+
+1. State and assistant
+	State describes the graph’s conversation state: a messages list. The add_messages annotation tells LangGraph how to combine new messages with the existing history.
+	Assistant wraps the LLM chain. When called, it:
+		1. Reads passenger_id from the graph’s configuration.
+		2. Adds it to the state as user_info, so the prompt and tools can use it.
+		3. Invokes the LLM.
+		4. If the LLM returns an empty response without requesting a tool, asks it to produce a real response and tries again.
+		5. Returns the result as a message for the graph.
+2. Prompt and tools
+	* primary_assistant_prompt gives the model its role and instructions: help with flights, policies .... It also includes the current user’s information and the current time.
+	* part_1_tools is the set of actions the model can request: searching information, retrieving flight details, and managing flights, rentals, hotels, and excursions.
+	* llm.bind_tools(part_1_tools) makes those tools available to the model. The model can request a tool call; the graph’s tool node executes it.
+3. Graph and memory
+	The graph has two working nodes:
+		START → assistant → (tool call?) → tools → assistant
+		                   └ (no tool call) → END
+		tools_condition decides whether to route the assistant’s result to the tools node or finish. After tools run, the graph returns to the assistant so it can interpret the results and respond.
+		InMemorySaver stores checkpoints in memory, keyed here by thread_id, so messages in this run can share conversation state. It is not persistent storage across process restarts.
+4. Example conversation
+	The rest of the file runs a sample travel-support conversation:
+		* It updates the example database dates with update_dates(db).
+		* It creates a unique thread_id and configures a passenger ID.
+		* For each question, it streams graph events and passes them to _print_event to display the conversation and tool activity.
+The final comments review the demo: the agent can complete travel tasks, but it may take actions the user didn’t intend—for example, booking a car while discussing lodging. That’s a limitation of this simple setup; it doesn’t add a separate confirmation step before bookings.
+"""
+```
+```mermaid
+sequenceDiagram
+    actor User
+    participant Graph as part_1_graph
+    participant Assistant
+    participant LLM as Prompt + LLM
+    participant Condition as tools_condition
+    participant Tools as Tool node
+
+    User->>Graph: Send message + config
+    Graph->>Assistant: Invoke with state and config
+    Assistant->>Assistant: Read passenger_id from config
+    Assistant->>LLM: Invoke with messages, user_info, and time
+    LLM-->>Assistant: Assistant response
+
+    alt Empty response and no tool calls
+        Assistant->>LLM: Retry with "Respond with a real output."
+        LLM-->>Assistant: Response
+    end
+
+    Assistant-->>Graph: Return assistant message
+    Graph->>Condition: Check for tool calls
+
+    alt Assistant requested one or more tools
+        Condition-->>Graph: Route to tools
+        Graph->>Tools: Execute requested tool(s)
+        Tools-->>Graph: Return tool results
+        Graph->>Assistant: Invoke again with updated messages
+        Assistant->>LLM: Generate response using tool results
+        LLM-->>Assistant: Final response or more tool calls
+        Assistant-->>Graph: Return assistant message
+        Graph->>Condition: Check again
+    else No tool calls
+        Condition-->>Graph: End graph run
+        Graph-->>User: Return assistant response
+    end
+```
+```
+"""
+State - StateGraph's state as a typed dictionary containing an append-only list of messages. These messages form the chat history, which is all the state our simple assistant needs.
 """
 class State(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
 
 """
-Agent
-Next, define the assistant function. This function takes the graph state, formats it into a prompt, 
-and then calls an LLM for it to predict the best response.
+Agent - Define the assistant function. This function takes the graph state, formats it into a prompt, and then calls an LLM for it to predict the best response.
 """
 class Assistant:
     def __init__(self, runnable: Runnable):
@@ -872,21 +969,6 @@ class Assistant:
                 break
         return {"messages": result}
 
-
-# Haiku is faster and cheaper, but less accurate
-# llm = ChatAnthropic(model="claude-3-haiku-20240307")
-#llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
-# You could swap LLMs, though you will likely want to update the prompts when doing so!
-#llm = ChatOpenAI(model="gpt-4-turbo-preview")
-
-llm = AzureChatOpenAI(
-    azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
-    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT_LLM"],
-    api_key=os.environ["AZURE_OPENAI_API_KEY"],
-    api_version="2025-03-01-preview",
-    temperature=0,
-)
-
 primary_assistant_prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -903,7 +985,7 @@ primary_assistant_prompt = ChatPromptTemplate.from_messages(
 ).partial(time=datetime.now)
 
 part_1_tools = [
-    TavilySearchResults(max_results=1),
+    tavilySearch,
     fetch_user_flight_information,
     search_flights,
     lookup_policy,
@@ -925,8 +1007,7 @@ part_1_tools = [
 part_1_assistant_runnable = primary_assistant_prompt | llm.bind_tools(part_1_tools)
 
 """
-Define Graph
-Now, create the graph. The graph is the final assistant for this section.
+Define Graph - create the graph. The graph is the final assistant for this section.
 """
 builder = StateGraph(State)
 
@@ -953,15 +1034,11 @@ except Exception:
     # This requires some extra dependencies and is optional
     pass
 ```
-
 <img width="218" height="285" alt="image" src="https://github.com/user-attachments/assets/af9197ed-2f9b-4b91-86b8-fdc9a65ae0eb" />
 
 ```
 """
-Example Conversation
-Let's run it over the following list of dialog turns. 
-If it hits a "RecursionLimit", that means the agent wasn't able to get an answer in the allocated number of steps. 
-That's OK! We have more tricks up our sleeve in later sections of this tutorial.
+Example Conversation - If it hits a "RecursionLimit", that means the agent wasn't able to get an answer in the allocated number of steps. 
 """
 # Let's create an example conversation a user might have with the assistant
 tutorial_questions = [
@@ -1005,11 +1082,11 @@ for question in tutorial_questions:
 ```
 <img width="1063" height="347" alt="image" src="https://github.com/user-attachments/assets/504592ab-2ee4-4a39-b7b1-626e3a6bf08c" />
 
+```
 """
 Part 1 Review
 Our simple assistant is not bad! It was able to respond reasonably well for all the questions, quickly respond in-context, and successfully execute all our tasks. 
 
-If this were a simple Q&A bot, we'd probably be happy with the results above. 
 Since our customer support bot is taking actions on behalf of the user, some of its behavior above is a bit concerning:
 
     The assistant booked a car when we were focusing on lodging, then had to cancel and rebook later on: oops! The user should have final say before booking to avoid unwanted feeds.
@@ -1017,7 +1094,11 @@ Since our customer support bot is taking actions on behalf of the user, some of 
     The assistant had to do an explicit search just to get the user's relevant information. We can save a lot of time by fetching the user's relevant travel details immediately so the assistant can directly respond.
 
 In the next section, we will address the first two of these issues.
+"""
+```
 
+```
+"""
 Part 2: Add Confirmation
 When an assistant takes actions on behalf of the user, the user should (almost) always have the final say on whether to follow through with the actions. 
 Otherwise, any small mistake the assistant makes (or any prompt injection it succombs to) can cause real damage to the user.
