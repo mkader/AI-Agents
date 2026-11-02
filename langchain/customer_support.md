@@ -952,7 +952,11 @@ try:
 except Exception:
     # This requires some extra dependencies and is optional
     pass
+```
 
+<img width="218" height="285" alt="image" src="https://github.com/user-attachments/assets/af9197ed-2f9b-4b91-86b8-fdc9a65ae0eb" />
+
+```
 """
 Example Conversation
 Let's run it over the following list of dialog turns. 
@@ -999,6 +1003,56 @@ for question in tutorial_questions:
     for event in events:
         _print_event(event, _printed)
 ```
+<img width="1063" height="347" alt="image" src="https://github.com/user-attachments/assets/504592ab-2ee4-4a39-b7b1-626e3a6bf08c" />
+
+"""
+Part 1 Review
+Our simple assistant is not bad! It was able to respond reasonably well for all the questions, quickly respond in-context, and successfully execute all our tasks. 
+
+If this were a simple Q&A bot, we'd probably be happy with the results above. 
+Since our customer support bot is taking actions on behalf of the user, some of its behavior above is a bit concerning:
+
+    The assistant booked a car when we were focusing on lodging, then had to cancel and rebook later on: oops! The user should have final say before booking to avoid unwanted feeds.
+    The assistant struggled to search for recommendations. We could improve this by adding more verbose instructions and examples using the tool, but doing this for every tool can lead to a large prompt and overwhelmed agent.
+    The assistant had to do an explicit search just to get the user's relevant information. We can save a lot of time by fetching the user's relevant travel details immediately so the assistant can directly respond.
+
+In the next section, we will address the first two of these issues.
+
+Part 2: Add Confirmation
+When an assistant takes actions on behalf of the user, the user should (almost) always have the final say on whether to follow through with the actions. 
+Otherwise, any small mistake the assistant makes (or any prompt injection it succombs to) can cause real damage to the user.
+
+In this section, we will use interrupt_before to pause the graph and return control to the user before executing any of the tools.
+
+Your graph will look something like the following:
+"""
+
+<img width="1252" height="608" alt="image" src="https://github.com/user-attachments/assets/4bfccce6-877f-4293-8ec6-389a58aaea64" />
+
+"""
+As before, start by defining the state:
+
+State & Assistant
+Our graph state and LLM calling is nearly identical to Part 1 except Exception:
+
+	We've added a user_info field that will be eagerly populated by our graph
+	We can use the state directly in the Assistant object rather than using the configurable params
+"""
+
+<img width="335" height="425" alt="image" src="https://github.com/user-attachments/assets/a7b840d6-89be-4d79-83ed-e95ece8347ea" />
+
+<img width="1018" height="385" alt="image" src="https://github.com/user-attachments/assets/4fd68eed-dec4-498f-aa84-675523b23e4e" />
+
+<img width="1262" height="626" alt="image" src="https://github.com/user-attachments/assets/5c08963a-39e1-424a-92de-eede641d878e" />
+
+<img width="1063" height="407" alt="image" src="https://github.com/user-attachments/assets/dc27b37e-e8b8-4146-9e2a-588243efa924" />
+
+<img width="935" height="295" alt="image" src="https://github.com/user-attachments/assets/27564d0e-7fee-461c-ad43-c842845fd0d8" />
+
+<img width="1266" height="633" alt="image" src="https://github.com/user-attachments/assets/b5dda22c-d2db-4c62-8c14-f9e3cd3a5c0a" />
+
+<img width="1904" height="396" alt="image" src="https://github.com/user-attachments/assets/b2248cb4-5f66-47ad-a99b-ba7a48ab16dc" />
+
 
 ## travel database samples
 
