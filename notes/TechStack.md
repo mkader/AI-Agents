@@ -1,4 +1,125 @@
-[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation)
+[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation) | [Guardrails](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Guardrails)
+
+### Guardrails
+* Guardrails are checks and rules around an AI system that help keep its inputs, behavior, and outputs within safe and useful boundaries.
+* They can protect sensitive information, reduce harmful or off-topic answers, and stop the model from making claims that violate business rules.
+* Think of them as several checkpoints:
+	* Before the AI responds: Check the request—for example, block requests for someone else’s private account details.
+	* While guiding the AI: Give it clear rules and approved information to use.
+	* After it responds: Check that the answer is safe and follows policy; block it or provide a safe fallback if it doesn’t.
+	* During testing: Run example questions to catch failures before users encounter them.
+ * Example: customer-support AI
+	* Suppose a support bot should tell customers that returns are allowed within 30 days.
+		* A user asks: “Can I return this after 90 days?”
+		* The AI might mistakenly answer: “Yes, you have 90 days.”
+	* A guardrail checks the answer against the actual return policy. Since it contradicts the policy, the bot shouldn’t send that answer. It can instead say: “The return window is 30 days. For help with an exception, please contact support.”
+	* A key point: a prompt that says “always follow the policy” is helpful, but it isn’t a complete guardrail by itself. An output check and a safe fallback provide another layer of protection.
+	```
+	import os
+	from dotenv import load_dotenv
+	
+	from langchain_core.output_parsers import StrOutputParser
+	from langchain_core.prompts import ChatPromptTemplate
+	from langchain_openai import ChatOpenAI
+	
+	load_dotenv()
+	
+	# Reuse the Azure OpenAI settings already in your .env file.
+	llm = ChatOpenAI(
+	    model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+	    base_url=os.environ["AZURE_OPENAI_ENDPOINT_V1"],
+	    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+	    temperature=0,
+	)
+	
+	prompt = ChatPromptTemplate.from_messages(
+	    [
+	        (
+	            "system",
+	            "Answer general customer-support questions clearly. "
+	            "Do not invent company policies or account details. "
+	            "If you don't know, say so and direct the customer to support.",
+	        ),
+	        ("human", "{question}"),
+	    ]
+	)
+	
+	support_chain = prompt | llm | StrOutputParser()
+	
+	RETURN_POLICY = "Items can be returned within 30 days of purchase."
+	SAFE_FALLBACK = "I couldn't generate an answer. Please contact support."
+	
+	
+	def ask_ai(inputs: dict) -> dict[str, str]:
+	    question = inputs["question"]
+	    question_lower = question.casefold()
+	
+	    # For policy questions, return the approved answer rather than generated text.
+	    if "return" in question_lower or "refund" in question_lower:
+	        return {"answer": RETURN_POLICY}
+	
+	    answer = support_chain.invoke({"question": question}).strip()
+	    return {"answer": answer or SAFE_FALLBACK}
+	
+	print(ask_ai({"question": "Can I return an item after 90 days?"}))
+
+ 	{'answer': 'Items can be returned within 30 days of purchase.'}
+ 	```
+	```
+	import os
+	
+	from dotenv import load_dotenv
+	from langchain.agents import create_agent
+	from langchain.agents.middleware import PIIMiddleware
+	from langchain.tools import tool
+	from langchain_openai import ChatOpenAI
+	
+	load_dotenv()
+	
+	@tool
+	def search(query: str) -> str:
+	    """Search the support knowledge base and return a short summary."""
+	    return f"Support knowledge base results for: {query}"
+	
+	
+	model = ChatOpenAI(
+	    model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+	    base_url=os.environ["AZURE_OPENAI_ENDPOINT_V1"],
+	    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+	    temperature=0,
+	)
+	
+	agent = create_agent(
+	    model=model,
+	    tools=[search],
+	    system_prompt=(
+	        "You are a customer-support assistant. Use the search tool for support "
+	        "questions. Never ask for or reveal sensitive personal information."
+	    ),
+	    middleware=[
+	        PIIMiddleware(
+	            "email",
+	            strategy="redact",
+	            apply_to_input=True,
+	            apply_to_output=True,
+	        ),
+	    ],
+	)
+	
+	
+	def ask_agent(question: str) -> str:
+	    result = agent.invoke(
+	        {"messages": [{"role": "user", "content": question}]}
+	    )
+	    print(result)
+	    return str(result["messages"][-1].content)
+	
+	
+	if __name__ == "__main__":
+	    print(ask_agent("Search for the return policy. My email is alice@example.com."))
+ 	```
+
+	<img width="1027" height="670" alt="image" src="https://github.com/user-attachments/assets/d7a3f149-d8b5-46d6-8394-be27fca011b2" />
 
 ### Evaluation
 * It's a repeatable way to measure how well a model or agent performs on a set of representative tasks.
