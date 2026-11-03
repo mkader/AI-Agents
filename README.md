@@ -7,8 +7,8 @@
   | 🤖 Chatbot Simulation Evaluation (1.md) | AI / QA | Simulate user interactions to evaluate chatbot performance |
   | 🧠 Information Gathering via Prompting (2.md) | Research | LangGraph workflow using prompting to gather information |
   | 🧠 Code Assistant with LangGraph (3.md) | Software Development | Resilient code assistant with error checking and iterative refinement |
-  | 🧑‍💼 Customer Support Agent | Customer Support | Graph-based agent for handling customer inquiries | 
-  | 🔁 Extraction with Retries | Data Extraction | Retry mechanisms for robust data extraction |
+  | 🧑‍💼 Customer Support Agent (4.md) | Customer Support | Graph-based agent for handling customer inquiries | 
+  | 🔁 Extraction with Retries(5.md) | Data Extraction | Retry mechanisms for robust data extraction |
   | 🧠 Multi-Agent Workflow (Supervisor) | Workflow Orchestration | Supervisor agent orchestrating multiple specialized agents | 
   | 🧠 Hierarchical Agent Teams | Workflow Orchestration | Top-level supervisor delegates to specialized sub-agents |
   | 🤝 Multi-Agent Collaboration | Workflow Orchestration | Multiple specialized agents working together on complex tasks |
