@@ -1,4 +1,4 @@
-[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation) | [Guardrails](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Guardrails) | [Agents | Harness](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Agents--Harness)
+[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation) | [Guardrails](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Guardrails) | [Agents | Harness](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Agents--Harness)  | [Harness | Harness](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#harness)
 
 ### [Agents](https://docs.langchain.com/oss/python/langchain/agents) | Harness
 * An agent is a model calling tools in a loop until a given task is complete.
@@ -134,6 +134,38 @@
   		* Steering lets you place humans at specific decision points—before destructive writes, expensive API calls, or anything requiring judgment—without restructuring your agent.
     	* The agent pauses and waits; a human approves, edits, or rejects; execution continues.
     	``` middleware=[HumanInTheLoopMiddleware(interrupt_on={"write_file": True})], ```
+
+### harness
+* An AI agent harness is the software around an AI model that lets it do more than just generate text.
+* The harness receives a request, gives the model instructions and available tools, runs approved tool calls, sends their results back to the model, and returns the final answer.
+* Think of the model as the decision-maker and the harness as the operator that connects it to tools and enforces the rules.
+* Example: a weather assistant
+	* A user asks: “What’s the weather in Seattle?”
+	1. The harness sends the request and instructions to the model, along with a description of a weather lookup tool.
+	2. The model decides it needs current weather and requests that tool.
+	3. The harness checks the request, calls the weather service, and gets the result.
+	4. The harness gives that result to the model.
+	5. The model responds: “It’s 54°F and raining in Seattle.”
+* Simplified pseudocode:
+	```
+	def handle_request(user_message):
+	    messages = [
+	        {"role": "system", "content": "Answer helpfully. Use the weather tool for current conditions."},
+	        {"role": "user", "content": user_message},
+	    ]
+	
+	    response = model.respond(messages, tools=[weather_tool])
+	
+	    if response.tool_call:
+	        # The harness runs the requested tool and returns its result to the model.
+	        result = weather_tool(response.tool_call.arguments)
+	        messages.append(response.tool_call)
+	        messages.append({"role": "tool", "content": result})
+	        response = model.respond(messages, tools=[weather_tool])
+	
+	    return response.text
+	```  
+* The harness is responsible for things like tool execution, permissions, conversation state, error handling, and limits. The model chooses what it thinks should happen; the harness determines what actually happens.
 
 ### Guardrails
 * Guardrails are checks and rules around an AI system that help keep its inputs, behavior, and outputs within safe and useful boundaries.
