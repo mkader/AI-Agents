@@ -1,4 +1,97 @@
-[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith)
+[CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation)
+
+### Evaluation
+* It's a repeatable way to measure how well a model or agent performs on a set of representative tasks.
+* You give it test inputs, assess its outputs against criteria, and track the results—often before and after a prompt, model, or code change.
+* Common eval terms:
+	* Dataset: The test cases (inputs, and sometimes reference answers).
+	* Metric: A measurable score, such as accuracy, pass rate, latency, or cost.
+	* Grader: The rule or method that scores an output. It can be deterministic code, a human, or another model (“LLM-as-judge”).
+	* Baseline / regression: The existing score and whether a change made performance worse.
+	```
+	test_cases = [
+	    {
+	        "question": "When can I return an item?",
+	        "answer": "You can return it within 30 days of purchase.",
+	        "must_include": ["30 days"],
+	    },
+	    {
+	        "question": "How do I reset my password?",
+	        "answer": "Select Forgot password on the sign-in page.",
+	        "must_include": ["Forgot password", "sign-in page"],
+	    },
+	]
+	
+	def grade(case):
+	    answer = case["answer"].lower()
+	    missing = [
+	        phrase for phrase in case["must_include"]
+	        if phrase.lower() not in answer
+	    ]
+	    return {"passed": not missing, "missing": missing}
+	
+	results = [grade(case) for case in test_cases]
+	pass_rate = sum(r["passed"] for r in results) / len(results)
+	
+	print(f"Pass rate: {pass_rate:.0%}")
+	for case, result in zip(test_cases, results):
+	    print(case["question"], result)
+	```
+	```
+ 		from openai import OpenAI
+		import os
+		from dotenv import load_dotenv
+		load_dotenv()
+		
+		client = OpenAI(
+		    base_url=os.environ["AZURE_OPENAI_ENDPOINT_V1"],
+		    api_key=os.environ["AZURE_OPENAI_API_KEY"]
+		)
+		test_cases = [
+		    {
+		        "question": "When can I return an item?",
+		        "must_include": ["30 days"],
+		    },
+		    {
+		        "question": "How do I reset my password?",
+		        "must_include": ["Forgot password"],
+		    },
+		    {
+		        "question": "When can I return an item?",
+		        "must_include": ["90 days"],
+		    },
+		]
+		
+		def ask_ai(question: str) -> str:
+		    response = client.chat.completions.create(
+		        model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+		        messages=[
+		            {
+		                "role": "system",
+		                "content": (
+		                    "Answer customer support questions clearly. "
+		                    "Items can be returned within 30 days of purchase."
+		                ),
+		            },
+		            {"role": "user", "content": question},
+		        ],
+		    )
+		    return response.choices[0].message.content or ""
+		
+		def grade(answer: str, required_phrases: list[str]) -> bool:
+		    return all(phrase.lower() in answer.lower() for phrase in required_phrases)
+		
+		results = []
+		for case in test_cases:
+		    answer = ask_ai(case["question"])
+		    passed = grade(answer, case["must_include"])
+		    results.append(passed)
+		    print(f"Q: {case['question']}\nA: {answer}\nPassed: {passed}\n")
+		
+		print(f"Pass rate: {sum(results) / len(results):.0%}")
+ 	```
+
+  	<img width="566" height="530" alt="image" src="https://github.com/user-attachments/assets/e76703ae-8987-43e8-bf6a-173da8a6aae8" />
 
 #### [LangSmith](https://smith.langchain.com/)
 * It's a platform for building, testing, and monitoring AI applications. It works with LangChain and LangGraph, but can also be used with other frameworks.
