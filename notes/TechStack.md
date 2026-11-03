@@ -2,29 +2,138 @@
 
 ### [Agents](https://docs.langchain.com/oss/python/langchain/agents) | Harness
 * An agent is a model calling tools in a loop until a given task is complete.
-	<img width="1060" height="760" alt="image" src="https://github.com/user-attachments/assets/92918a8c-be9d-4cce-9e7a-2984ee3c3293" />
+	<img width="550" height="400" alt="image" src="https://github.com/user-attachments/assets/92918a8c-be9d-4cce-9e7a-2984ee3c3293" />
 * A harness is everything around that loop: the prompt, the tools, and any middleware that shapes the model’s behavior. ``` Agent = Model + Harness ```
 * The job of a harness: get the model the right context at the right time for the given task.
-* LangChain [create_agent](https://reference.langchain.com/python/langchain/agents/factory/create_agent) is a highly configurable harness. At its simplest, you can create one with:
 	```
 	from langchain.agents import create_agent
 
 	def check_weather(location: str) -> str:
 	    '''Return the weather forecast for the specified location.'''
 	    return f"It's always sunny in {location}"
-	
-	graph = create_agent(
+
+ 	class Answer(BaseModel):
+    	summary: str
+    	confidence: float
+
+ 	class MyState(AgentState):
+    	user_id: str
+    	call_count: int
+ 
+	agent = create_agent(
 	    model="anthropic:claude-sonnet-4-5-20250929",
 	    tools=[check_weather],
 	    system_prompt="You are a helpful assistant",
+ 		response_format=Answer,
+ 		state_schema=MyState,
 	)
 	inputs = {"messages": [{"role": "user", "content": "what is the weather in sf"}]}
-	for chunk in graph.stream(inputs, stream_mode="updates"):
-	    print(chunk)
-	```
-* Core Components
-  <img width="1200" height="760" alt="image" src="https://github.com/user-attachments/assets/f1982ef2-4eb3-4e77-9eba-5951b373a3d8" />
 
+ 	result = agent.invoke(
+	    {"messages": [{"role": "user", "content": "What's the weather in San Francisco?"}]},
+	    config=config,
+	)
+
+ 	for chunk in agent.stream(inputs, stream_mode="updates"):
+	    print(chunk)
+ 
+ 	stream = agent.stream_events(
+	    {"messages": [{"role": "user", "content": "Search for AI news and summarize the findings"}]},
+	    version="v3",
+	)
+	for snapshot in stream.values:
+	    # Each snapshot contains the full state at that point
+	    latest_message = snapshot["messages"][-1]
+	```
+ <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/f1982ef2-4eb3-4e77-9eba-5951b373a3d8" />
+ 
+* Core Components
+	* Model, tools, system_prompt
+ 	* Structured output - Return a validated schema from the agent using response_format=
+ 	* Agent state - Every agent manages its execution context through AgentState, a typed dictionary that holds the current conversation history and any custom fields your tools and middleware need.
+  		* For a weather agent, the state might look like this: ``` state = {"city": "Seattle", "units": "fahrenheit", "weather_result": None, "step": "need_weather" } ```
+		* The agent can update it as it works: 1) It reads the request: “What’s the weather in Seattle?” 2)It stores city = "Seattle" and units = "fahrenheit". 3) It calls the weather tool and saves the result in weather_result. 4) It uses that result to answer the user.
+		* State can include conversation history, task progress, and tool results.
+  		* Some state exists only during one request; other state may be saved between conversations.
+    	* The harness manages where state is stored and what is passed to the model.
+* Invocation - invoke an agent with a message. Behind the scenes that passes an update to the agent’s State.
+	* All agents include a sequence of messages in their state; to invoke the agent, pass a new message along with a thread_id so the agent can persist and resume conversation history
+* Streaming - invoke returns the final response at the end of a run.
+	* If an agent executes multiple tool calls, users often need progress updates before completion.
+	* Use streaming to surface intermediate messages and tool activity as they happen.
+* Configure the harness
+	* LangChain [create_agent](https://reference.langchain.com/python/langchain/agents/factory/create_agent) is a highly configurable harness or extensible.
+ 
+ 	<img width="750" height="200" alt="image" src="https://github.com/user-attachments/assets/2d467edc-7955-47b0-9d7d-9d48b96eab8f" />
+	
+	* Execution environment
+ 		* Agents are especially useful when they can take action rather than just generate text.
+   		* The execution environment gives the agent a workspace: tools it can call, a filesystem for reading and writing files across turns, and code execution for running scripts or shell commands.
+     	```
+		from deepagents.middleware import FilesystemMiddleware, MemoryMiddleware, SkillsMiddleware, SummarizationMiddleware
+		# Execution environment
+		agent = create_agent(
+		    model="openai:gpt-5.5",
+		    tools=[search],
+		    middleware=[FilesystemMiddleware(backend=StateBackend())],
+		)
+  		```
+     * Context management
+		* Every model call has a fixed context window.
+     	*  As an agent runs, that window fills with accumulating history, tool results, and intermediate steps.
+      	*  Summarization compresses history before overflow hits; memory loads persistent instructions at startup so knowledge carries across sessions; skills surface domain knowledge on demand rather than loading everything upfront.
+		```
+	     backend = StateBackend()
+		    middleware=[
+		        FilesystemMiddleware(backend=backend),
+		        SummarizationMiddleware(model=model, backend=backend),
+		        MemoryMiddleware(backend=backend, sources=["./AGENTS.md"]),
+		        SkillsMiddleware(backend=backend, sources=["./skills/"]),
+		    ],
+     	```
+  	* Planning and delegation
+		* Complex tasks often exceed what one context window can handle.
+  		* Delegation lets the main agent break work into pieces, hand them to subagents that each run in their own isolated context, and stay focused on coordination rather than execution.
+    	* Work can run in parallel; the main agent’s context stays clean.
+		```	
+		@tool
+		def search(query: str) -> str:
+		    """Search for a query and return a short summary."""
+		    return f"Search results for: {query}"
+
+	    middleware=[
+	        FilesystemMiddleware(backend=backend),
+	        TodoListMiddleware(),
+	        SubAgentMiddleware(
+	            backend=backend,
+	            subagents=[
+	                {
+	                    "name": "researcher",
+	                    "description": "Searches and returns a structured summary.",
+	                    "system_prompt": "Use the search tool to research the question and summarize key points.",
+	                    "tools": [search],
+	                    "model": "anthropic:claude-sonnet-4-6",
+	                    "middleware": [],
+	                }
+	            ],
+	        ),
+	    ],
+		```
+  	* Fault tolerance
+		* Agents in production encounter failures that rarely appear in development: rate limits, model timeouts, transient API errors.
+  		* Fault tolerance middleware handles these at the infrastructure level so your tools and business logic don’t need try/catch around every call.
+	    ```
+	    middleware=[
+	        ModelRetryMiddleware(max_retries=3),
+	        ToolRetryMiddleware(max_retries=2),
+	    ],
+	    ```
+	* Guardrails
+ 	* Steering
+		* Full autonomy isn’t always appropriate.
+  		* Steering lets you place humans at specific decision points—before destructive writes, expensive API calls, or anything requiring judgment—without restructuring your agent.
+    	* The agent pauses and waits; a human approves, edits, or rejects; execution continues.
+    	``` middleware=[HumanInTheLoopMiddleware(interrupt_on={"write_file": True})], ```
 
 ### Guardrails
 * Guardrails are checks and rules around an AI system that help keep its inputs, behavior, and outputs within safe and useful boundaries.
