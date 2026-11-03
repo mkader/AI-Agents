@@ -98,6 +98,111 @@
 * Think of it as a flight recorder and test bench for an AI app:
 	* Tracing: Records an app’s steps—LLM calls, tool use, inputs, outputs, timing, and errors—so you can see what happened when a response was poor or slow.
 	* Evaluation: Lets you test outputs against examples or scoring criteria, and compare changes to prompts or models.
+	   	```
+	    import os
+	
+		from dotenv import load_dotenv
+		from langsmith import Client, evaluate
+		from langsmith.schemas import Example, Run
+		from openai import OpenAI
+		
+		load_dotenv()
+		
+		openai_client = OpenAI(
+		    base_url=os.environ["AZURE_OPENAI_ENDPOINT_V1"],
+		    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+		)
+		
+		DATASET_NAME = "support-faq-eval-v1"
+		test_cases = [
+		    {
+		        "question": "When can I return an item?",
+		        "must_include": ["30 days"],
+		    },
+		    {
+		        "question": "How do I reset my password?",
+		        "must_include": ["Forgot password"],
+		    },
+		    {
+		        "question": "When can I return an item?",
+		        "must_include": ["90 days"],
+		    },
+		]
+		
+		langsmith_client = Client()
+		if not langsmith_client.has_dataset(dataset_name=DATASET_NAME):
+		    dataset = langsmith_client.create_dataset(
+		        dataset_name=DATASET_NAME,
+		        description="Support FAQ evaluation cases, including an intentional failure case.",
+		    )
+		    langsmith_client.create_examples(
+		        dataset_id=dataset.id,
+		        examples=[
+		            {
+		                "inputs": {"question": case["question"]},
+		                "outputs": {"must_include": case["must_include"]},
+		            }
+		            for case in test_cases
+		        ],
+		    )
+		
+		
+		def ask_ai(inputs: dict) -> dict[str, str]:
+		    response = openai_client.chat.completions.create(
+		        model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME_LLM"],
+		        messages=[
+		            {
+		                "role": "system",
+		                "content": (
+		                    "Answer customer support questions clearly. "
+		                    "Items can be returned within 30 days of purchase. "
+		                    "To reset a password, select Forgot password."
+		                ),
+		            },
+		            {"role": "user", "content": inputs["question"]},
+		        ],
+		    )
+		    return {"answer": response.choices[0].message.content or ""}
+		
+		
+		def grade_required_phrases(run: Run, example: Example) -> dict:
+		    if run.outputs is None or example.outputs is None:
+		        raise ValueError("The model response and expected phrases are required for grading.")
+		
+		    answer = run.outputs["answer"].lower()
+		    required_phrases = example.outputs["must_include"]
+		    missing = [
+		        phrase for phrase in required_phrases
+		        if phrase.lower() not in answer
+		    ]
+		    return {
+		        "key": "required_information",
+		        "score": not missing,
+		        "comment": (
+		            f"Missing required phrase(s): {', '.join(missing)}"
+		            if missing
+		            else "All required phrases were present."
+		        ),
+		    }
+		
+		
+		results = evaluate(
+		    ask_ai,
+		    data=DATASET_NAME,
+		    evaluators=[grade_required_phrases],
+		    client=langsmith_client,
+		    experiment_prefix="support-faq-eval",
+		    description="Check whether support answers include required information.",
+		)
+		> python eval.py
+	     View the evaluation results for experiment: 'support-faq-eval-e3eb3c5f' at:
+	     https://smith.langchain.com/o/77aba6cc-e7f9-4245-a3b5-36012d9d5606/datasets/37b476bb-daa9-4914-afd2-658fb6da48f2/compare?selectedSessions=f1d3548b-0922-4c10-beaa-2be28a3b1828
+	     3it [00:03,  1.31s/it]
+	    ```
+	    <img width="1672" height="832" alt="image" src="https://github.com/user-attachments/assets/a9dd180a-a1e8-4b54-8b6f-bc41819ffed1" />
+	
+	  	<img width="1681" height="302" alt="image" src="https://github.com/user-attachments/assets/378119cc-342b-48c4-a783-fe2b9e969bc6" />
+
 	* Prompt management: Helps create, version, and test prompts.
 	* Monitoring: Shows how the application behaves in production, including failures and usage patterns.
 	* Deployment: Offers tools for deploying certain agent applications and workflows.
