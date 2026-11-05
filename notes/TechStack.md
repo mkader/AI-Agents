@@ -1,5 +1,67 @@
 [CrewAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#crewai) | [serper](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#serper) | [firecrawl](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#firecrawl) | [Load Env](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#load-env) | [Pydantic](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#pydantic) | [LightningAI's LitServe](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#lightningais-litserve) | [FastMCP](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#fastmcp-created-by-prefect) | [Ollama](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ollama) | [CartesiaAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#cartesiaai) | [AssemblyAI](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#assemblyai) | [LlamaIndex](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#llamaindex-to-power-rag) | [Livekit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#livekit-for-orchestration) | [Browserbase](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#browserbase) | [Streamlit](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#streamlit) | [BrightData](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#brightdata) | [Zep](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#zep) | [MS Agent Framework (MAF)](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#ms-agent-framework-maf) | [Motia or III](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#motia-or-iii) | [langchain](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#langchain) | [Pandas](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Pandas) | [News API](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#News) | [tavily](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#tavily) | [LangGraph](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangGraph) | [LangSmith](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#LangSmith) | [Evaluation](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Evaluation) | [Guardrails](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Guardrails) | [Agents | Harness](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#Agents--Harness)  | [Harness](https://github.com/mkader/AI-Agents/blob/main/notes/TechStack.md#harness)
 
+### Runing Agent
+* Agents support both synchronous and asynchronous execution using either .invoke() / await .ainvoke() for full responses, or .stream() / .astream() for incremental streaming output.
+	```
+	from langchain.agents import create_agent
+	agent = create_agent(...)
+	response = agent.invoke({"messages": [{"role": "user", "content": "what is the weather in sf"}]}) 
+	response = await agent.ainvoke({"messages": [{"role": "user", "content": "what is the weather in sf"}]})
+	```
+* Inputs and outputs
+	* Agents use a language model that expects a list of messages as an input. Therefore, agent inputs and outputs are stored as a list of messages under the messages key in the agent state.
+	* Input format - Agent input must be a dictionary with a messages key. Supported formats are:
+		```
+		Format				Example
+		String				{"messages": "Hello"} — Interpreted as a HumanMessage
+		Message dictionary	{"messages": {"role": "user", "content": "Hello"}}
+		List of messages	{"messages": [{"role": "user", "content": "Hello"}]}
+		With custom state	{"messages": [{"role": "user", "content": "Hello"}], "user_name": "Alice"} — If using a custom state_schema
+		```
+	* Output format - Agent output is a dictionary containing:
+		* messages: A list of all messages exchanged during execution (user input, assistant replies, tool invocations).
+		* Optionally, structured_response if structured output is configured.
+		* If using a custom state_schema, additional keys corresponding to your defined fields may also be present in the output. These can hold updated state values from tool execution or prompt logic.
+* Streaming output - Agents support streaming responses for more responsive applications. This includes:
+	* Progress updates after each step
+	* LLM tokens as they're generated
+	* Custom tool messages during execution
+	```
+	async for chunk in agent.astream(
+	for chunk in agent.stream(
+	    {"messages": [{"role": "user", "content": "what is the weather in sf"}]},
+	    stream_mode="updates"
+	):
+	    print(chunk)
+	```
+* Max iterations
+	* To control agent execution and avoid infinite loops, set a recursion limit.
+	* This defines the maximum number of steps the agent can take before raising a GraphRecursionError.
+ 	* You can configure recursion_limit at runtime or when defining agent via .with_config(): :::
+	* "Runtime"
+		```
+		from langgraph.errors import GraphRecursionError
+		
+		max_iterations = 3
+		recursion_limit = 2 * max_iterations + 1
+		
+		try:
+		    response = agent.invoke(
+		        {"messages": [{"role": "user", "content": "what's the weather in sf"}]},
+		        {"recursion_limit": recursion_limit},
+		    )
+		except GraphRecursionError:
+		    print("Agent stopped due to max iterations.")
+		```
+	* ".with_config()"
+		```
+		agent_with_recursion_limit = agent.with_config(recursion_limit=recursion_limit)
+
+  		response = agent_with_recursion_limit.invoke(
+			{"messages": [{"role": "user", "content": "what's the weather in sf"}]},
+		)
+		```
+
 ### [Agents](https://docs.langchain.com/oss/python/langchain/agents) | Harness
 * An agent is a model calling tools in a loop until a given task is complete.
 	<img width="550" height="400" alt="image" src="https://github.com/user-attachments/assets/92918a8c-be9d-4cce-9e7a-2984ee3c3293" />
