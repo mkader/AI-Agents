@@ -9,9 +9,9 @@
   | 🧠 Code Assistant with LangGraph (3.md) | Software Development | Resilient code assistant with error checking and iterative refinement |
   | 🧑‍💼 Customer Support Agent (4.md) | Customer Support | Graph-based agent for handling customer inquiries | 
   | 🔁 Extraction with Retries(5.md) | Data Extraction | Retry mechanisms for robust data extraction |
-  | 🧠 Multi-Agent Workflow (Supervisor) | Workflow Orchestration | Supervisor agent orchestrating multiple specialized agents | 
-  | 🧠 Hierarchical Agent Teams | Workflow Orchestration | Top-level supervisor delegates to specialized sub-agents |
-  | 🤝 Multi-Agent Collaboration | Workflow Orchestration | Multiple specialized agents working together on complex tasks |
+  | 🧠 Multi-Agent Workflow (Supervisor) (6.0) | Workflow Orchestration | Supervisor agent orchestrating multiple specialized agents | 
+  | 🧠 Hierarchical Agent Teams (6.1) | Workflow Orchestration | Top-level supervisor delegates to specialized sub-agents |
+  | 🤝 Multi-Agent Collaboration (6.2) | Workflow Orchestration | Multiple specialized agents working together on complex tasks |
   | 🧠 Plan-and-Execute Agent | Workflow Orchestration | Agent generates multi-step plan then executes sequentially 
   | 🧠 SQL Agent | Database Interaction | Agent answers questions about SQL databases |
   | 🧠 Reflection Agent | Workflow Orchestration | Agent critiques and revises its own outputs |
