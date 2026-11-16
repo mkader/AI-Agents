@@ -1,5 +1,6 @@
 # Building AI Agents That Work in the Real World
 <img width="334" height="374" alt="image" src="https://github.com/user-attachments/assets/4e34c353-a572-409e-81bd-d3bf3ddd2d76" />
+<img width="616" height="729" alt="image" src="https://github.com/user-attachments/assets/ddc7477c-5350-4f13-9c40-74855d70cc05" />
 
 ## Part 1 - From LLM to Agent
 * What an LLM can and can't do on its own
@@ -49,4 +50,6 @@
 * The whole harness, in one picture
 * A tip for each part
 <img width="784" height="286" alt="image" src="https://github.com/user-attachments/assets/5b2c73c3-cbcc-4eda-b345-a470bee1ad91" />
+
+* https://live.bytebytego.com/masterclasses/build-ai-agents
 
