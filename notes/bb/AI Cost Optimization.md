@@ -160,3 +160,5 @@
 * Apply the full optimization toolkit end to end
 * Agentic Workflow Optimization diagramWeek 4 assignment diagram
 <img width="444" height="501" alt="image" src="https://github.com/user-attachments/assets/ed49fb79-34c6-49f1-9395-fc1516121889" />
+
+* https://live.bytebytego.com/courses/ai-cost?promotionCode=INSIDER20
