@@ -127,3 +127,4 @@
 * Internalizing search (e.g., Meta-CoT)
 #### Local Deployment
 <img width="537" height="589" alt="image" src="https://github.com/user-attachments/assets/b7c5622f-8d6c-4b04-aa62-3a6a56406b5d" />
+* https://live.bytebytego.com/courses/ai-engineering?promotionCode=INSIDER20
