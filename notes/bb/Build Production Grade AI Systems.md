@@ -155,3 +155,5 @@
 #### Live Demo: Deploy the full platform with a canary release, a cost report, and a human-supervised agent
 * Scaling diagram
 <img width="502" height="590" alt="image" src="https://github.com/user-attachments/assets/8c2f6f6a-2e74-4c85-a731-5c2d77fa8ce1" />
+
+* https://live.bytebytego.com/courses/production-ai?promotionCode=INSIDER20
