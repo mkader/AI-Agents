@@ -29,12 +29,12 @@ Follow the quickstart, connect tools, and learn about sessions and state.
 [Python SDK](https://github.com/google/adk-python)
 [PRACTICAL EXAMPLES — Google ADK Recipes. Explore examples covering session memory, authentication, guardrails and retrieval.](https://github.com/google/adk-recipes)
 
-3. SECURITY — NVIDIA OpenShell
+4. SECURITY — NVIDIA OpenShell
 Understand sandboxing, access policies, and how network requests and credentials are managed outside the agent.
 [Architecture](https://docs.nvidia.com/openshell/about/architecture)
 [GitHub](https://github.com/NVIDIA/OpenShell)
 
-4. EVALUATION — NVIDIA NeMo Agent Toolkit
+5. EVALUATION — NVIDIA NeMo Agent Toolkit
 Learn how to evaluate agent behaviour, measure reliability and explore evaluation workflows.
 [Guide](https://docs.nvidia.com/nemo/agent-toolkit/latest/improve-workflows/evaluate.html)
 [GitHub](https://github.com/NVIDIA/NeMo-Agent-Toolkit)
