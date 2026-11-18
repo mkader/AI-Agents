@@ -1,4 +1,6 @@
 # Rebuild YouTube with AI
+* https://www.youtube.com/watch?v=E5Ef_Kne17U
+  
 <img width="389" height="337" alt="image" src="https://github.com/user-attachments/assets/2fc30936-96bc-4750-929e-2eb2d56bc477" />
 
 ## What you'll learn
