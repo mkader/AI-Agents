@@ -12,10 +12,10 @@
   | 🧠 Multi-Agent Workflow (Supervisor) (6.0) | Workflow Orchestration | Supervisor agent orchestrating multiple specialized agents | 
   | 🧠 Hierarchical Agent Teams (6.1) | Workflow Orchestration | Top-level supervisor delegates to specialized sub-agents |
   | 🤝 Multi-Agent Collaboration (6.2) | Workflow Orchestration | Multiple specialized agents working together on complex tasks |
-  | 🧠 Plan-and-Execute Agent | Workflow Orchestration | Agent generates multi-step plan then executes sequentially 
-  | 🧠 SQL Agent | Database Interaction | Agent answers questions about SQL databases |
-  | 🧠 Reflection Agent | Workflow Orchestration | Agent critiques and revises its own outputs |
-  | 🧠 Reflexion Agent | Workflow Orchestration | Agent reflects on actions for iterative improvement |
+  | 🧠 Plan-and-Execute Agent (7) | Workflow Orchestration | Agent generates multi-step plan then executes sequentially 
+  | 🧠 SQL Agent (8) | Database Interaction | Agent answers questions about SQL databases |
+  | 🧠 Reflection Agent (9) | Workflow Orchestration | Agent critiques and revises its own outputs |
+  | 🧠 Reflexion Agent (10) | Workflow Orchestration | Agent reflects on actions for iterative improvement |
   | 🧠 Adaptive RAG | Information Retrieval | Dynamic retrieval adjusting based on query complexity |
   | 🤖 Agentic RAG | Intelligent Agents | Agent determines best retrieval strategy before generating response |
   | 🧠 Corrective RAG (CRAG) | Information Retrieval | Evaluates and refines retrieved documents before generation |
