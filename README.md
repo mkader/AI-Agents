@@ -4,6 +4,7 @@
 * [langchain](https://github.com/langchain-ai/langgraph/tree/23961cff61a42b52525f3b20b4094d8d2fba1744/docs/docs/tutorials)
   * https://academy.langchain.com/collections
 
+
   | Use Case | Industry | Description |
   |---|---|---|
   | 🤖 Chatbot Simulation Evaluation (1.md) | AI / QA | Simulate user interactions to evaluate chatbot performance |
